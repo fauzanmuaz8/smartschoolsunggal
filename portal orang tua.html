@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portal Orang Tua - SMAN 1 Sunggal</title>
+
+  <!-- Bootstrap CSS & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(to right, #1a2980, #26d0ce);
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      padding-top: 30px;
+      min-height: 100vh;
+    }
+    .title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 16px;
+      color: #e0f7ff;
+      margin-bottom: 30px;
+    }
+    .card {
+      border: none;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      color: #fff;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+    .card-body {
+      padding: 30px 20px;
+    }
+    .icon {
+      font-size: 2.7rem;
+      color: #ffffff;
+      margin-bottom: 10px;
+      transition: color 0.3s ease;
+    }
+    .card:hover .icon {
+      color: #00ffff;
+    }
+    h5 {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+    .row {
+      margin-bottom: 50px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container text-center">
+    <div class="title">PORTAL ORANG TUA<br>SMAN 1 SUNGGAL</div>
+    <div class="subtitle">"Bersama mengawal masa depan putra-putri kita dengan informasi yang transparan dan terpercaya."</div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 justify-content-center">
+
+      <!-- Lihat Nilai Rapor -->
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('rapor_siswa.html')">
+          <div class="card-body">
+            <i class="bi bi-file-earmark-bar-graph icon"></i>
+            <h5>Nilai Rapor</h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kehadiran Siswa -->
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('kehadiran_siswa.html')">
+          <div class="card-body">
+            <i class="bi bi-calendar-check icon"></i>
+            <h5>Kehadiran</h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jadwal Sekolah -->
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('jadwal_siswa.html')">
+          <div class="card-body">
+            <i class="bi bi-calendar-event icon"></i>
+            <h5>Jadwal Sekolah</h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Tugas -->
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('tugas_siswa.html')">
+          <div class="card-body">
+            <i class="bi bi-journal-text icon"></i>
+            <h5>Info Tugas</h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Konseling -->
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('konseling_info.html')">
+          <div class="card-body">
+            <i class="bi bi-person-lines-fill icon"></i>
+            <h5>Konseling</h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pengumuman Sekolah -->
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('pengumuman.html')">
+          <div class="card-body">
+            <i class="bi bi-megaphone-fill icon"></i>
+            <h5>Pengumuman Sekolah</h5>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Script Navigasi -->
+  <script>
+    function handleClick(targetUrl) {
+      window.location.href = targetUrl;
+    }
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

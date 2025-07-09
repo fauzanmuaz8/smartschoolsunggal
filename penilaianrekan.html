@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Penilaian Rekan Sejawat</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      background-color: #e0f0ff;
+      font-family: Arial;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    select, input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .danger {
+      background-color: #dc3545;
+    }
+    #tabelPenilaian {
+      margin-top: 15px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    #tabelPenilaian th, #tabelPenilaian td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    #adminMenu, #formAdmin, #dataPenilaianSection {
+      display: none;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Penilaian Rekan Sejawat</h2>
+
+    <label for="namaGuru">Pilih Nama Guru</label>
+    <select id="namaGuru"><option value="">-- Pilih Guru --</option></select>
+
+    <label for="penilai">Nama Penilai</label>
+    <input type="text" id="penilai" placeholder="Nama penilai">
+
+    <label for="penilaian">Penilaian</label>
+    <select id="penilaian">
+      <option value="">-- Pilih Penilaian --</option>
+      <option value="Buruk">Buruk</option>
+      <option value="Cukup">Cukup</option>
+      <option value="Baik">Baik</option>
+      <option value="Sangat Baik">Sangat Baik</option>
+    </select>
+
+    <label for="catatan">Catatan</label>
+    <textarea id="catatan" rows="4"></textarea>
+
+    <button onclick="kirimPenilaian()">Kirim Penilaian</button>
+
+    <hr>
+
+    <button onclick="toggleAdmin()">🔒 Menu Admin</button>
+    <button onclick="toggleData()">📊 Lihat Data Penilaian</button>
+
+    <div id="formAdmin">
+      <label for="kodeAkses">Masukkan Kode Admin</label>
+      <input type="password" id="kodeAkses" placeholder="Kode akses admin">
+      <button onclick="verifikasiKode()">✅ Akses</button>
+
+      <div id="adminMenu">
+        <label for="namaBaru">Tambah Guru Manual</label>
+        <input type="text" id="namaBaru" placeholder="Nama Guru Baru">
+        <button onclick="tambahGuru()">+ Tambah Guru</button>
+
+        <label for="hapusGuru">Hapus Guru</label>
+        <select id="hapusGuru"><option value="">-- Pilih Guru --</option></select>
+        <button onclick="hapusGuru()" class="danger">🗑️ Hapus Guru</button>
+      </div>
+    </div>
+
+    <div id="dataPenilaianSection">
+      <label for="filterGuru">Filter Guru</label>
+      <select id="filterGuru" onchange="tampilkanPenilaian()"><option value="">-- Semua Guru --</option></select>
+
+      <table id="tabelPenilaian">
+        <thead style="background-color:#f0f0f0">
+          <tr>
+            <th>Guru Dinilai</th>
+            <th>Penilai</th>
+            <th>Nilai</th>
+            <th>Catatan</th>
+            <th>Waktu</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <button onclick="cetakPDF()">📄 Cetak PDF</button>
+      <button onclick="exportExcel()">📥 Export Excel</button>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
+      authDomain: "loginsmartschool-4f57d.firebaseapp.com",
+      databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
+      projectId: "loginsmartschool-4f57d",
+      storageBucket: "loginsmartschool-4f57d.firebasestorage.app",
+      messagingSenderId: "166215127727",
+      appId: "1:166215127727:web:6888450f047c203871fa5a",
+      measurementId: "G-8ZWH6QBTFV"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function toggleAdmin() {
+      document.getElementById('formAdmin').style.display = 'block';
+    }
+
+    function toggleData() {
+      const d = document.getElementById('dataPenilaianSection');
+      d.style.display = d.style.display === 'none' ? 'block' : 'none';
+      tampilkanPenilaian();
+    }
+
+    function verifikasiKode() {
+      const kode = document.getElementById('kodeAkses').value;
+      if (kode === "5UGJV99QQT") {
+        document.getElementById('adminMenu').style.display = "block";
+      } else {
+        alert("Kode salah!");
+      }
+    }
+
+    function tambahGuru() {
+      const nama = document.getElementById('namaBaru').value.trim();
+      if (nama === "") return alert("Nama tidak boleh kosong");
+      db.ref("guru").push().set({ nama: nama });
+      alert("Guru ditambahkan!");
+      document.getElementById('namaBaru').value = "";
+      isiDropdownGuru();
+    }
+
+    function hapusGuru() {
+      const key = document.getElementById('hapusGuru').value;
+      if (!key) return alert("Pilih guru untuk dihapus");
+      if (confirm("Yakin hapus guru ini?")) {
+        db.ref("guru/" + key).remove().then(() => {
+          alert("Guru dihapus.");
+          isiDropdownGuru();
+        });
+      }
+    }
+
+    function kirimPenilaian() {
+      const guru = document.getElementById('namaGuru').value;
+      const penilai = document.getElementById('penilai').value;
+      const nilai = document.getElementById('penilaian').value;
+      const catatan = document.getElementById('catatan').value;
+      if (!guru || !penilai || !nilai) return alert("Isi semua kolom!");
+      db.ref("penilaian").push().set({
+        guru_dinilai: guru,
+        penilai: penilai,
+        nilai: nilai,
+        catatan: catatan,
+        waktu: new Date().toISOString()
+      });
+      alert("Penilaian terkirim!");
+      document.getElementById('penilaian').value = "";
+      document.getElementById('catatan').value = "";
+    }
+
+    function isiDropdownGuru() {
+      const namaGuru = document.getElementById('namaGuru');
+      const hapusGuru = document.getElementById('hapusGuru');
+      const filterGuru = document.getElementById('filterGuru');
+      namaGuru.innerHTML = '<option value="">-- Pilih Guru --</option>';
+      hapusGuru.innerHTML = '<option value="">-- Pilih Guru --</option>';
+      filterGuru.innerHTML = '<option value="">-- Semua Guru --</option>';
+      db.ref("guru").once("value", snap => {
+        snap.forEach(child => {
+          const nama = child.val().nama;
+          const key = child.key;
+          namaGuru.innerHTML += `<option value="${nama}">${nama}</option>`;
+          hapusGuru.innerHTML += `<option value="${key}">${nama}</option>`;
+          filterGuru.innerHTML += `<option value="${nama}">${nama}</option>`;
+        });
+      });
+    }
+
+    function tampilkanPenilaian() {
+      const tbody = document.querySelector("#tabelPenilaian tbody");
+      const filter = document.getElementById("filterGuru").value;
+      tbody.innerHTML = "<tr><td colspan='5'>Memuat...</td></tr>";
+      db.ref("penilaian").once("value", snap => {
+        let rows = "";
+        snap.forEach(child => {
+          const d = child.val();
+          if (!filter || d.guru_dinilai === filter) {
+            rows += `
+              <tr>
+                <td>${d.guru_dinilai}</td>
+                <td>${d.penilai}</td>
+                <td>${d.nilai}</td>
+                <td>${d.catatan || "-"}</td>
+                <td>${new Date(d.waktu).toLocaleString('id-ID')}</td>
+              </tr>`;
+          }
+        });
+        tbody.innerHTML = rows || "<tr><td colspan='5'>Tidak ada data</td></tr>";
+      });
+    }
+
+    function cetakPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text("Laporan Penilaian Rekan Sejawat", 10, 10);
+      const rows = [];
+      document.querySelectorAll("#tabelPenilaian tbody tr").forEach(row => {
+        const cols = Array.from(row.children).map(td => td.innerText);
+        rows.push(cols);
+      });
+      doc.autoTable({ head: [["Guru", "Penilai", "Nilai", "Catatan", "Waktu"]], body: rows, startY: 20 });
+      doc.save("laporan_penilaian.pdf");
+    }
+
+    function exportExcel() {
+      const wb = XLSX.utils.book_new();
+      const ws_data = [["Guru", "Penilai", "Nilai", "Catatan", "Waktu"]];
+      document.querySelectorAll("#tabelPenilaian tbody tr").forEach(row => {
+        const cols = Array.from(row.children).map(td => td.innerText);
+        ws_data.push(cols);
+      });
+      const ws = XLSX.utils.aoa_to_sheet(ws_data);
+      XLSX.utils.book_append_sheet(wb, ws, "Penilaian");
+      XLSX.writeFile(wb, "laporan_penilaian.xlsx");
+    }
+
+    window.onload = isiDropdownGuru;
+  </script>
+</body>
+</html>

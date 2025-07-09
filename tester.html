@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portal Peminjaman Barang</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <div class="container">
+      <a class="navbar-brand" href="#">Portal Peminjaman Barang</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="#" onclick="showSection('inventaris')">Inventaris</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('peminjaman')">Peminjaman</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('pengembalian')">Pengembalian</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('riwayat')">Riwayat</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('laporan')">Laporan</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('tambahBarang')">Tambah Barang</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Inventaris -->
+    <div id="inventaris" class="section">
+      <h3>Inventaris Barang</h3>
+      <table class="table table-bordered table-striped" id="inventarisTable">
+        <thead>
+          <tr>
+            <th>Kode Barang</th>
+            <th>Nama Barang</th>
+            <th>Jumlah</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Peminjaman -->
+    <div id="peminjaman" class="section" style="display:none;">
+      <h3>Peminjaman Barang</h3>
+      <form id="formPeminjaman">
+        <div class="mb-3">
+          <label for="kodePinjam" class="form-label">Kode Barang</label>
+          <select class="form-select" id="kodePinjam" required></select>
+        </div>
+        <div class="mb-3">
+          <label for="namaPeminjam" class="form-label">Nama Peminjam</label>
+          <input type="text" class="form-control" id="namaPeminjam" required />
+        </div>
+        <div class="mb-3">
+          <label for="jumlahPinjam" class="form-label">Jumlah</label>
+          <input type="number" class="form-control" id="jumlahPinjam" min="1" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Pinjam</button>
+      </form>
+    </div>
+
+    <!-- Pengembalian -->
+    <div id="pengembalian" class="section" style="display:none;">
+      <h3>Pengembalian Barang</h3>
+      <form id="formPengembalian">
+        <div class="mb-3">
+          <label for="kodeKembali" class="form-label">Kode Barang</label>
+          <select class="form-select" id="kodeKembali" required></select>
+        </div>
+        <div class="mb-3">
+          <label for="namaPengembali" class="form-label">Nama Pengembali</label>
+          <input type="text" class="form-control" id="namaPengembali" required />
+        </div>
+        <div class="mb-3">
+          <label for="jumlahKembali" class="form-label">Jumlah</label>
+          <input type="number" class="form-control" id="jumlahKembali" min="1" required />
+        </div>
+        <button type="submit" class="btn btn-success">Kembalikan</button>
+      </form>
+    </div>
+
+    <!-- Riwayat -->
+    <div id="riwayat" class="section" style="display:none;">
+      <h3>Riwayat Transaksi</h3>
+      <table class="table table-bordered table-striped" id="riwayatTable">
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Jenis</th>
+            <th>Kode Barang</th>
+            <th>Nama Barang</th>
+            <th>Nama User</th>
+            <th>Jumlah</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Laporan -->
+    <div id="laporan" class="section" style="display:none;">
+      <h3>Laporan</h3>
+      <table class="table table-bordered table-striped" id="laporanTable">
+        <thead>
+          <tr>
+            <th>Kode Barang</th>
+            <th>Nama Barang</th>
+            <th>Total Barang</th>
+            <th>Jumlah Dipinjam</th>
+            <th>Jumlah Tersedia</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Tambah Barang -->
+    <div id="tambahBarang" class="section" style="display:none;">
+      <h3>Tambah Barang</h3>
+      <form id="formTambahBarang">
+        <div class="mb-3">
+          <label for="kodeBarang" class="form-label">Kode Barang</label>
+          <input type="text" class="form-control" id="kodeBarang" required />
+        </div>
+        <div class="mb-3">
+          <label for="namaBarang" class="form-label">Nama Barang</label>
+          <input type="text" class="form-control" id="namaBarang" required />
+        </div>
+        <div class="mb-3">
+          <label for="jumlahBarang" class="form-label">Jumlah</label>
+          <input type="number" class="form-control" id="jumlahBarang" min="1" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Tambah Barang</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Your Firebase configuration here, ganti dengan config milikmu
+const firebaseConfig = {
+  apiKey: "AIzaSyD0mM7l6SavEyAtTHEB9UBfqEePdS3cx5Y",
+  authDomain: "portal-inventaris-barang.firebaseapp.com",
+  databaseURL: "https://portal-inventaris-barang-default-rtdb.firebaseio.com",
+  projectId: "portal-inventaris-barang",
+  storageBucket: "portal-inventaris-barang.firebasestorage.app",
+  messagingSenderId: "840427301697",
+  appId: "1:840427301697:web:a9bf5f88fae3ba2f798fc0",
+  measurementId: "G-JLFB65MPG3"
+};
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Helper show section
+    function showSection(sectionId) {
+      document.querySelectorAll('.section').forEach(sec => {
+        sec.style.display = 'none';
+      });
+      document.getElementById(sectionId).style.display = 'block';
+      if(sectionId === 'inventaris') loadInventaris();
+      else if(sectionId === 'peminjaman') loadKodeBarang('kodePinjam');
+      else if(sectionId === 'pengembalian') loadKodeBarang('kodeKembali');
+      else if(sectionId === 'riwayat') loadRiwayat();
+      else if(sectionId === 'laporan') loadLaporan();
+    }
+
+    // Load inventaris
+    function loadInventaris() {
+      const tbody = document.querySelector('#inventarisTable tbody');
+      tbody.innerHTML = '';
+      db.ref('inventaris').once('value', snapshot => {
+        snapshot.forEach(childSnap => {
+          const barang = childSnap.val();
+          const status = barang.jumlah > 0 ? 'Tersedia' : 'Habis';
+          tbody.innerHTML += `<tr>
+            <td>${barang.kode}</td>
+            <td>${barang.nama}</td>
+            <td>${barang.jumlah}</td>
+            <td>${status}</td>
+          </tr>`;
+        });
+      });
+    }
+
+    // Load kode barang ke dropdown (untuk pinjam/kembali)
+    function loadKodeBarang(selectId) {
+      const select = document.getElementById(selectId);
+      select.innerHTML = '<option value="" disabled selected>Pilih kode barang</option>';
+      db.ref('inventaris').once('value', snapshot => {
+        snapshot.forEach(childSnap => {
+          const barang = childSnap.val();
+          if (barang.jumlah > 0) { // hanya barang tersedia untuk peminjaman
+            select.innerHTML += `<option value="${barang.kode}">${barang.kode} - ${barang.nama}</option>`;
+          }
+        });
+      });
+    }
+
+    // Tambah barang
+    document.getElementById('formTambahBarang').addEventListener('submit', e => {
+      e.preventDefault();
+      const kode = document.getElementById('kodeBarang').value.trim();
+      const nama = document.getElementById('namaBarang').value.trim();
+      const jumlah = parseInt(document.getElementById('jumlahBarang').value);
+
+      if (!kode || !nama || !jumlah || jumlah < 1) {
+        alert('Data tidak valid');
+        return;
+      }
+
+      // Cek dulu apakah kode barang sudah ada
+      db.ref('inventaris').orderByChild('kode').equalTo(kode).once('value', snapshot => {
+        if(snapshot.exists()) {
+          alert('Kode barang sudah ada, gunakan kode lain.');
+          return;
+        } else {
+          // tambah barang baru
+          const newBarang = { kode, nama, jumlah };
+          db.ref('inventaris').push(newBarang, err => {
+            if(err) alert('Gagal menambah barang');
+            else {
+              alert('Barang berhasil ditambahkan');
+              e.target.reset();
+              loadInventaris();
+            }
+          });
+        }
+      });
+    });
+
+    // Peminjaman barang
+    document.getElementById('formPeminjaman').addEventListener('submit', e => {
+      e.preventDefault();
+      const kode = document.getElementById('kodePinjam').value;
+      const namaUser = document.getElementById('namaPeminjam').value.trim();
+      const jumlah = parseInt(document.getElementById('jumlahPinjam').value);
+
+      if(!kode || !namaUser || jumlah < 1) {
+        alert('Data tidak valid');
+        return;
+      }
+
+      // cek inventaris apakah cukup
+      db.ref('inventaris').orderByChild('kode').equalTo(kode).once('value', snapshot => {
+        if(!snapshot.exists()) {
+          alert('Kode barang tidak ditemukan.');
+          return;
+        }
+        let key = null;
+        let barangData = null;
+        snapshot.forEach(childSnap => {
+          key = childSnap.key;
+          barangData = childSnap.val();
+        });
+
+        if(jumlah > barangData.jumlah) {
+          alert('Jumlah pinjam melebihi stok barang.');
+          return;
+        }
+
+        // kurangi stok barang
+        const newJumlah = barangData.jumlah - jumlah;
+        db.ref('inventaris/' + key).update({ jumlah: newJumlah }, err => {
+          if(err) {
+            alert('Gagal update inventaris.');
+            return;
+          }
+
+          // simpan transaksi peminjaman
+          const transaksi = {
+            tipe: 'pinjam',
+            kode: barangData.kode,
+            namaBarang: barangData.nama,
+            namaUser,
+            jumlah,
+            tanggal: new Date().toISOString()
+          };
+
+          db.ref('transaksi').push(transaksi, err2 => {
+            if(err2) alert('Gagal simpan transaksi');
+            else {
+              alert('Berhasil meminjam barang');
+              e.target.reset();
+              loadInventaris();
+            }
+          });
+        });
+      });
+    });
+
+    // Pengembalian barang
+    document.getElementById('formPengembalian').addEventListener('submit', e => {
+      e.preventDefault();
+      const kode = document.getElementById('kodeKembali').value;
+      const namaUser = document.getElementById('namaPengembali').value.trim();
+      const jumlah = parseInt(document.getElementById('jumlahKembali').value);
+
+      if(!kode || !namaUser || jumlah < 1) {
+        alert('Data tidak valid');
+        return;
+      }
+
+      // cek inventaris dulu
+      db.ref('inventaris').orderByChild('kode').equalTo(kode).once('value', snapshot => {
+        if(!snapshot.exists()) {
+          alert('Kode barang tidak ditemukan.');
+          return;
+        }
+        let key = null;
+        let barangData = null;
+        snapshot.forEach(childSnap => {
+          key = childSnap.key;
+          barangData = childSnap.val();
+        });
+
+        // update stok bertambah
+        const newJumlah = barangData.jumlah + jumlah;
+        db.ref('inventaris/' + key).update({ jumlah: newJumlah }, err => {
+          if(err) {
+            alert('Gagal update inventaris.');
+            return;
+          }
+
+          // simpan transaksi pengembalian
+          const transaksi = {
+            tipe: 'kembali',
+            kode: barangData.kode,
+            namaBarang: barangData.nama,
+            namaUser,
+            jumlah,
+            tanggal: new Date().toISOString()
+          };
+
+          db.ref('transaksi').push(transaksi, err2 => {
+            if(err2) alert('Gagal simpan transaksi');
+            else {
+              alert('Berhasil mengembalikan barang');
+              e.target.reset();
+              loadInventaris();
+            }
+          });
+        });
+      });
+    });
+
+    // Load riwayat transaksi
+    function loadRiwayat() {
+      const tbody = document.querySelector('#riwayatTable tbody');
+      tbody.innerHTML = '';
+      db.ref('transaksi').orderByChild('tanggal').once('value', snapshot => {
+        snapshot.forEach(childSnap => {
+          const tr = childSnap.val();
+          tbody.innerHTML += `<tr>
+            <td>${new Date(tr.tanggal).toLocaleString()}</td>
+            <td>${tr.tipe === 'pinjam' ? 'Peminjaman' : 'Pengembalian'}</td>
+            <td>${tr.kode}</td>
+            <td>${tr.namaBarang}</td>
+            <td>${tr.namaUser}</td>
+            <td>${tr.jumlah}</td>
+          </tr>`;
+        });
+      });
+    }
+
+    // Load laporan
+    function loadLaporan() {
+      const tbody = document.querySelector('#laporanTable tbody');
+      tbody.innerHTML = '';
+      db.ref('inventaris').once('value', snapshotInventaris => {
+        db.ref('transaksi').once('value', snapshotTransaksi => {
+          // buat map kode barang ke total pinjam
+          const pinjamMap = {};
+          snapshotTransaksi.forEach(childSnap => {
+            const tr = childSnap.val();
+            if(tr.tipe === 'pinjam') {
+              pinjamMap[tr.kode] = (pinjamMap[tr.kode] || 0) + tr.jumlah;
+            } else if (tr.tipe === 'kembali') {
+              pinjamMap[tr.kode] = (pinjamMap[tr.kode] || 0) - tr.jumlah;
+            }
+          });
+
+          snapshotInventaris.forEach(childSnap => {
+            const barang = childSnap.val();
+            const total = barang.jumlah + (pinjamMap[barang.kode] || 0);
+            const dipinjam = pinjamMap[barang.kode] || 0;
+            tbody.innerHTML += `<tr>
+              <td>${barang.kode}</td>
+              <td>${barang.nama}</td>
+              <td>${total}</td>
+              <td>${dipinjam}</td>
+              <td>${barang.jumlah}</td>
+            </tr>`;
+          });
+        });
+      });
+    }
+
+    // Load halaman default
+    showSection('inventaris');
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

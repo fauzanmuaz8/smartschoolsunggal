@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jadwal Kegiatan Pegawai - Firebase</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7f8;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      max-width: 600px;
+      margin: 20px auto;
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    form > * {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      font-size: 16px;
+    }
+    label {
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 10px;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    th, td {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tr:hover {
+      background-color: #dbe9ff;
+    }
+    .btn-delete {
+      background-color: #dc3545;
+      padding: 6px 12px;
+      border-radius: 4px;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-delete:hover {
+      background-color: #a71d2a;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Jadwal Kegiatan Pegawai</h1>
+
+  <form id="form-jadwal">
+    <label for="tanggal">Tanggal:</label>
+    <input type="date" id="tanggal" required />
+
+    <label for="hari">Hari:</label>
+    <select id="hari" required>
+      <option value="" disabled selected>Pilih Hari</option>
+      <option>Senin</option>
+      <option>Selasa</option>
+      <option>Rabu</option>
+      <option>Kamis</option>
+      <option>Jumat</option>
+      <option>Sabtu</option>
+      <option>Minggu</option>
+    </select>
+
+    <label for="jam">Jam:</label>
+    <input type="text" id="jam" placeholder="Contoh: 08:00 - 10:00" required />
+
+    <label for="kegiatan">Kegiatan:</label>
+    <input type="text" id="kegiatan" placeholder="Masukkan kegiatan" required />
+
+    <label for="tempat">Tempat:</label>
+    <input type="text" id="tempat" placeholder="Masukkan tempat" required />
+
+    <button type="submit">Tambah Jadwal</button>
+  </form>
+
+  <table id="tabel-jadwal">
+    <thead>
+      <tr>
+        <th>Tanggal</th>
+        <th>Hari</th>
+        <th>Jam</th>
+        <th>Kegiatan</th>
+        <th>Tempat</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data jadwal akan muncul di sini -->
+    </tbody>
+  </table>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    // TODO: Ganti dengan konfigurasi Firebase project kamu sendiri
+    const firebaseConfig = {
+  apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
+  authDomain: "loginsmartschool-4f57d.firebaseapp.com",
+  databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
+  projectId: "loginsmartschool-4f57d",
+  storageBucket: "loginsmartschool-4f57d.firebasestorage.app",
+  messagingSenderId: "166215127727",
+  appId: "1:166215127727:web:6888450f047c203871fa5a",
+  measurementId: "G-8ZWH6QBTFV"
+};
+
+    // Inisialisasi Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const form = document.getElementById('form-jadwal');
+    const tbody = document.querySelector('#tabel-jadwal tbody');
+
+    // Fungsi tambah jadwal
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const tanggal = document.getElementById('tanggal').value;
+      const hari = document.getElementById('hari').value;
+      const jam = document.getElementById('jam').value.trim();
+      const kegiatan = document.getElementById('kegiatan').value.trim();
+      const tempat = document.getElementById('tempat').value.trim();
+
+      if (!tanggal || !hari || !jam || !kegiatan || !tempat) {
+        alert('Mohon isi semua form dengan lengkap!');
+        return;
+      }
+
+      const newJadwalRef = db.ref('jadwal').push();
+      newJadwalRef.set({
+        tanggal,
+        hari,
+        jam,
+        kegiatan,
+        tempat
+      }).then(() => {
+        form.reset();
+      }).catch(err => {
+        alert('Gagal menambah jadwal: ' + err.message);
+      });
+    });
+
+    // Fungsi hapus jadwal
+    function hapusJadwal(id) {
+      if (confirm('Yakin ingin menghapus jadwal ini?')) {
+        db.ref('jadwal/' + id).remove();
+      }
+    }
+
+    // Fungsi render data jadwal
+    function renderJadwal(data) {
+      tbody.innerHTML = ''; // kosongkan dulu
+
+      data.forEach(item => {
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+          <td>${item.val.tanggal}</td>
+          <td>${item.val.hari}</td>
+          <td>${item.val.jam}</td>
+          <td>${item.val.kegiatan}</td>
+          <td>${item.val.tempat}</td>
+          <td><button class="btn-delete" onclick="hapusJadwal('${item.key}')">Hapus</button></td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Listener realtime untuk data jadwal
+    db.ref('jadwal').on('value', snapshot => {
+      const jadwalData = [];
+      snapshot.forEach(child => {
+        jadwalData.push({ key: child.key, val: child.val() });
+      });
+      renderJadwal(jadwalData);
+    });
+  </script>
+
+</body>
+</html>

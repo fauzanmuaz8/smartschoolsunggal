@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rencana Pembelajaran SMAN 1 Sunggal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <style>
+    .card-custom {
+      margin-bottom: 30px;
+      border-left: 5px solid #0d6efd;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    .card-custom .card-header {
+      background: #e7f1ff;
+      font-weight: bold;
+      color: #0d6efd;
+    }
+    .card-custom .btn-danger {
+      float: right;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+  <div class="container py-5">
+    <h2 class="text-center text-primary mb-4">Rencana Pembelajaran <br>SMAN 1 Sunggal</h2>
+
+    <div class="card shadow mb-4">
+      <div class="card-body">
+        <form id="rppForm">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label>Mata Pelajaran</label>
+              <input type="text" class="form-control" id="mapel" required>
+            </div>
+            <div class="col-md-6">
+              <label>Fase</label>
+              <select class="form-select" id="fase" required>
+                <option value="X - Fase E">X - Fase E</option>
+                <option value="XI - Fase F">XI - Fase F</option>
+                <option value="XII - Fase F">XII - Fase F</option>
+              </select>
+            </div>
+            <div class="col-md-12">
+              <label>Tujuan Pembelajaran</label>
+              <textarea class="form-control" id="tujuan" required></textarea>
+            </div>
+            <div class="col-md-12">
+              <label>Capaian Pembelajaran</label>
+              <textarea class="form-control" id="capaian" required></textarea>
+            </div>
+            <div class="col-md-12">
+              <label>Alur Tujuan Pembelajaran</label>
+              <textarea class="form-control" id="alur" required></textarea>
+            </div>
+            <div class="col-md-12">
+              <label>Aktivitas Pembelajaran</label>
+              <textarea class="form-control" id="aktivitas" required></textarea>
+            </div>
+            <div class="col-md-12">
+              <label>Penilaian Pembelajaran</label>
+              <textarea class="form-control" id="penilaian" required></textarea>
+            </div>
+            <div class="col-md-6">
+              <label>Nama Guru</label>
+              <input type="text" class="form-control" id="guru" required>
+            </div>
+            <div class="col-md-3">
+              <label>Kelas</label>
+              <select class="form-select" id="kelas" required>
+                <optgroup label="Kelas X">
+                  ${[...Array(13)].map((_, i) => `<option value="X-${i+1}">X 1 </option>`).join('')}
+                  ${[...Array(13)].map((_, i) => `<option value="X-${i+1}">X 2 </option>`).join('')}
+                </optgroup>
+                <optgroup label="Kelas XI">
+                  ${[...Array(12)].map((_, i) => `<option value="XI-${i+1}">XI-${i+1}</option>`).join('')}
+                </optgroup>
+                <optgroup label="Kelas XII">
+                  ${[...Array(11)].map((_, i) => `<option value="XII-${i+1}">XII-${i+1}</option>`).join('')}
+                </optgroup>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label>Semester</label>
+              <select class="form-select" id="semester" required>
+                <option>1</option>
+                <option>2</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label>Kode Verifikasi</label>
+              <input type="password" class="form-control" id="kode" placeholder="Masukkan kode: sunggaljuara" required>
+            </div>
+            <div class="col-md-6 d-grid align-items-end">
+              <button class="btn btn-primary" type="submit">Simpan RPP</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="dataList" class="row gy-4 mt-4"></div>
+  </div>
+
+<script>
+  // Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
+    authDomain: "loginsmartschool-4f57d.firebaseapp.com",
+    databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
+    projectId: "loginsmartschool-4f57d",
+    storageBucket: "loginsmartschool-4f57d.appspot.com",
+    messagingSenderId: "166215127727",
+    appId: "1:166215127727:web:6888450f047c203871fa5a"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database().ref("rpp");
+
+  // Simpan Data
+  document.getElementById('rppForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (kode.value !== "sunggaljuara") return alert("Kode salah!");
+
+    const data = {
+      mapel: mapel.value,
+      fase: fase.value,
+      tujuan: tujuan.value,
+      capaian: capaian.value,
+      alur: alur.value,
+      aktivitas: aktivitas.value,
+      penilaian: penilaian.value,
+      guru: guru.value,
+      kelas: kelas.value,
+      semester: semester.value
+    };
+    const key = db.push().key;
+    db.child(key).set(data, () => {
+      document.getElementById("rppForm").reset();
+      alert("Data berhasil disimpan!");
+    });
+  });
+
+  // Tampilkan Data Potrait
+  db.on("value", snapshot => {
+    const container = document.getElementById("dataList");
+    container.innerHTML = "";
+    snapshot.forEach(child => {
+      const data = child.val();
+      const html = `
+        <div class="col-md-6">
+          <div class="card card-custom">
+            <div class="card-header">
+              ${data.mapel} - ${data.kelas} (${data.semester})
+              <button class="btn btn-sm btn-danger" onclick="hapus('${child.key}')">Hapus</button>
+            </div>
+            <div class="card-body">
+              <p><strong>Fase:</strong> ${data.fase}</p>
+              <p><strong>Guru:</strong> ${data.guru}</p>
+              <p><strong>Tujuan:</strong> ${data.tujuan}</p>
+              <p><strong>Capaian:</strong> ${data.capaian}</p>
+              <p><strong>Alur:</strong> ${data.alur}</p>
+              <p><strong>Aktivitas:</strong> ${data.aktivitas}</p>
+              <p><strong>Penilaian:</strong> ${data.penilaian}</p>
+            </div>
+          </div>
+        </div>`;
+      container.innerHTML += html;
+    });
+  });
+
+  function hapus(id) {
+    if (confirm("Yakin ingin menghapus data ini?")) {
+      db.child(id).remove();
+    }
+  }
+</script>
+
+</body>
+</html>

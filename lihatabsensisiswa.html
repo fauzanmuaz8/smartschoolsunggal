@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Lihat Absensi Siswa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+</head>
+<body class="bg-light">
+  <div class="container py-5">
+    <h2 class="text-center mb-4">👁️‍🗨️ Lihat Absensi Siswa</h2>
+
+    <div class="mb-4">
+      <label class="form-label fw-bold fs-5">Pilih Kelas:</label>
+      <select id="filterKelas" class="form-select form-select-lg">
+        <option value="">-- Pilih Kelas --</option>
+        <option>X 1</option><option>X 2</option><option>X 3</option><option>X 4</option><option>X 5</option><option>X 6</option>
+        <option>X 7</option><option>X 8</option><option>X 9</option><option>X 10</option><option>X 11</option><option>X 12</option>
+        <option>XI 1</option><option>XI 2</option><option>XI 3</option><option>XI 4</option><option>XI 5</option><option>XI 6</option>
+        <option>XI 7</option><option>XI 8</option><option>XI 9</option><option>XI 10</option><option>XI 11</option><option>XI 12</option>
+        <option>XII 1</option><option>XII 2</option><option>XII 3</option><option>XII 4</option><option>XII 5</option><option>XII 6</option>
+        <option>XII 7</option><option>XII 8</option><option>XII 9</option><option>XII 10</option><option>XII 11</option><option>XII 12</option>
+      </select>
+    </div>
+
+    <div id="absensiList" class="mt-4"></div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
+      authDomain: "loginsmartschool-4f57d.firebaseapp.com",
+      databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
+      projectId: "loginsmartschool-4f57d",
+      storageBucket: "loginsmartschool-4f57d.appspot.com",
+      messagingSenderId: "166215127727",
+      appId: "1:166215127727:web:6888450f047c203871fa5a",
+      measurementId: "G-8ZWH6QBTFV"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const filterKelas = document.getElementById("filterKelas");
+    const absensiList = document.getElementById("absensiList");
+
+    filterKelas.addEventListener("change", () => {
+      const kelasDipilih = filterKelas.value;
+      absensiList.innerHTML = "";
+
+      if (!kelasDipilih) return;
+
+      db.ref("absensi").once("value", snap => {
+        let data = snap.val();
+        let filtered = Object.entries(data || {}).filter(([_, d]) => d.kelas === kelasDipilih);
+
+        if (filtered.length === 0) {
+          absensiList.innerHTML = `<div class="alert alert-warning">Belum ada data absensi untuk kelas <strong>${kelasDipilih}</strong>.</div>`;
+          return;
+        }
+
+        absensiList.innerHTML = filtered.map(([_, d], i) => `
+          <div class="card mb-2 shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title mb-1">${i + 1}. ${d.siswa}</h5>
+              <p class="card-text mb-0"><strong>Guru:</strong> ${d.guru}</p>
+              <p class="card-text mb-0"><strong>Tanggal:</strong> ${d.waktu}</p>
+              <p class="card-text mb-0"><strong>Keterangan:</strong> ${d.keterangan}</p>
+            </div>
+          </div>
+        `).join("");
+      });
+    });
+  </script>
+</body>
+</html>

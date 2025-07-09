@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portal Siswa - SMAN 1 Sunggal</title>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(to right, #0d6efd, #6bc1ff);
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+    .title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: bold;
+      margin-top: 10px;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 16px;
+      color: #d0ecff;
+      margin-bottom: 20px;
+    }
+    .clock-info {
+      font-size: 14px;
+    }
+    .dropdown .btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+    }
+    .dropdown .btn:hover {
+      background: #dc3545;
+    }
+    .card {
+      border: none;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      color: white;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    .card-body {
+      padding: 25px;
+    }
+    .icon {
+      font-size: 2.5rem;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+    h5 {
+      font-size: 18px;
+    }
+    a {
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ✅ TOPBAR -->
+  <div class="topbar">
+    <div class="clock-info" id="datetime">Memuat waktu...</div>
+    <div class="clock-info" id="cuaca">Memuat cuaca...</div>
+    <div class="dropdown">
+      <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Siswa
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
+        <li><a class="dropdown-item disabled">SMAN 1 Sunggal</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ✅ JUDUL -->
+  <div class="container text-center">
+    <div class="title">PORTAL SISWA <br>SMAN 1 SUNGGAL</div>
+    <div class="subtitle">"Belajar hari ini, sukses di masa depan."</div>
+
+    <!-- ✅ MENU -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+
+      <!-- Jadwal -->
+      <div class="col">
+        <a href="jadwalmengajar.html">
+          <div class="card text-center shadow-sm">
+            <div class="card-body">
+              <i class="bi bi-calendar-event-fill icon"></i>
+              <h5>Jadwal</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Tugas -->
+      <div class="col">
+        <a href="tugas.html">
+          <div class="card text-center shadow-sm">
+            <div class="card-body">
+              <i class="bi bi-journal-check icon"></i>
+              <h5>Tugas</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Nilai -->
+      <div class="col">
+        <a href="https://lookerstudio.google.com/u/0/reporting/f58e617f-42f6-4c19-b513-b2a49de55151/page/page_12345">
+          <div class="card text-center shadow-sm">
+            <div class="card-body">
+              <i class="bi bi-bar-chart-line-fill icon"></i>
+              <h5>Nilai</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Data Siswa -->
+      <div class="col">
+        <a href="datasiswa.html">
+          <div class="card text-center shadow-sm">
+            <div class="card-body">
+              <i class="bi bi-laptop-fill icon"></i>
+              <h5>Data Siswa</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Absensi -->
+      <div class="col">
+        <a href="lihatabsensisiswa.html">
+          <div class="card text-center shadow-sm">
+            <div class="card-body">
+              <i class="bi bi-check-square-fill icon"></i>
+              <h5>Absensi</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Rapor -->
+      <div class="col">
+        <a href="https://lookerstudio.google.com/u/0/reporting/f58e617f-42f6-4c19-b513-b2a49de55151/page/page_12345">
+          <div class="card text-center shadow-sm">
+            <div class="card-body">
+              <i class="bi bi-file-earmark-text-fill icon"></i>
+              <h5>Rapor</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- JS Jam & Cuaca -->
+  <script>
+    function logout() {
+      alert("Anda telah logout.");
+      window.location.href = "index.html";
+    }
+
+    function updateDateTime() {
+      const now = new Date();
+      const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+      const waktu = now.toLocaleTimeString('id-ID');
+      const tanggal = now.toLocaleDateString('id-ID');
+      document.getElementById("datetime").innerText = `${hari[now.getDay()]}, ${tanggal} - ${waktu}`;
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    async function getWeather() {
+      try {
+        const res = await fetch(`https://wttr.in/Medan?format=1`);
+        const cuaca = await res.text();
+        document.getElementById("cuaca").innerText = `Cuaca: ${cuaca.trim()}`;
+      } catch {
+        document.getElementById("cuaca").innerText = "Cuaca: -";
+      }
+    }
+    getWeather();
+  </script>
+</body>
+</html>

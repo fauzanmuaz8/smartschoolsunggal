@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PORTAL TU - SMAN 1 SUNGGAL</title>
+
+  <!-- Bootstrap & Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(to right, #134e9e, #61dafb);
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      padding-top: 20px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      margin-bottom: 10px;
+    }
+    .clock-info {
+      font-size: 14px;
+      color: #eaffff;
+    }
+    .dropdown .btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+    }
+    .dropdown .btn:hover {
+      background: #dc3545;
+    }
+    .title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: bold;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 16px;
+      color: #e0f7ff;
+      margin-bottom: 30px;
+    }
+    .card {
+      border: none;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      color: #fff;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    }
+    .card-body {
+      padding: 30px 20px;
+    }
+    .icon {
+      font-size: 2.5rem;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+    .card:hover .icon {
+      color: #00ffff;
+    }
+    h5 {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ✅ TOPBAR -->
+  <div class="topbar">
+    <div class="clock-info" id="datetime">Memuat waktu...</div>
+    <div class="clock-info" id="cuaca">Memuat cuaca...</div>
+    <div class="dropdown">
+      <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        TU: Nama Pengguna
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
+        <li><a class="dropdown-item disabled">SMAN 1 Sunggal</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ✅ HEADER -->
+  <div class="container text-center">
+    <div class="title">PORTAL TATA USAHA <br>SMAN 1 SUNGGAL</div>
+    <div class="subtitle">"Data akurat, pelayanan cepat, arsip rapi, semangat luar biasa!"</div>
+
+    <!-- ✅ MENU 12 ITEM -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('datasiswa.html')">
+          <div class="card-body">
+            <i class="bi bi-people-fill icon"></i>
+            <h5>Data Siswa</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('https://lookerstudio.google.com/reporting/cb1297e5-68e0-4d87-839b-17a3b3c11927')">
+          <div class="card-body">
+            <i class="bi bi-person-badge-fill icon"></i>
+            <h5>Data Pegawai</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('https://lookerstudio.google.com/reporting/576ceed2-9e23-4786-8beb-28dfd1612fad')">
+          <div class="card-body">
+            <i class="bi bi-envelope-open-fill icon"></i>
+            <h5>Cari Surat Masuk</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('laporanpegawai.html')">
+          <div class="card-body">
+            <i class="bi bi-send-fill icon"></i>
+            <h5>Laporan Kinerja & Monitoring Kepsek</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('jadwal pegawai.html')">
+          <div class="card-body">
+            <i class="bi bi-calendar2-week-fill icon"></i>
+            <h5>Jadwal Kegiatan</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('https://script.google.com/macros/s/AKfycbzZpl4rxxwZ7rWhKCh4d4PNDknl9x1mHKWwifrqwyTk3tT_eXfsdmrmBYWFjaQ0SOlY5w/exec')">
+          <div class="card-body">
+            <i class="bi bi-box-seam-fill icon"></i>
+            <h5>Input Arsip Surat Masuk & Keluar</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('https://jstrieb.github.io/link-lock/#...')">
+          <div class="card-body">
+            <i class="bi bi-archive-fill icon"></i>
+            <h5>Arsip Dokumentasi Foto</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('https://drive.google.com/drive/folders/1q6qmcXbw8mpRMYGli6lGEDGBo78n76Uu?usp=sharing')">
+          <div class="card-body">
+            <i class="bi bi-check2-square icon"></i>
+            <h5>Arsip Dokumentasi File</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('https://jstrieb.github.io/link-lock/#...')">
+          <div class="card-body">
+            <i class="bi bi-journal-text icon"></i>
+            <h5>Arsip Ijazah</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('https://lookerstudio.google.com/reporting/f58e617f-42f6-4c19-b513-b2a49de55151')">
+          <div class="card-body">
+            <i class="bi bi-journal-text icon"></i>
+            <h5>E Rapor</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('peminjamantatausaha.html')">
+          <div class="card-body">
+            <i class="bi bi-box-seam-fill icon"></i>
+            <h5>Peminjaman ASET TU</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card text-center" onclick="handleClick('pengaturan.html')">
+          <div class="card-body">
+            <i class="bi bi-gear-fill icon"></i>
+            <h5>Pengaturan</h5>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Navigasi -->
+  <script>
+    function handleClick(url) {
+      window.location.href = url;
+    }
+    function logout() {
+      alert("Anda telah logout.");
+      window.location.href = "index.html";
+    }
+  </script>
+
+  <!-- Jam dan Cuaca -->
+  <script>
+    function updateDateTime() {
+      const now = new Date();
+      const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+      const waktu = now.toLocaleTimeString('id-ID');
+      const tanggal = now.toLocaleDateString('id-ID');
+      document.getElementById("datetime").innerText = `${hari[now.getDay()]}, ${tanggal} - ${waktu}`;
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    async function getWeather() {
+      try {
+        const res = await fetch(`https://wttr.in/Medan?format=1`);
+        const cuaca = await res.text();
+        document.getElementById("cuaca").innerText = `Cuaca: ${cuaca.trim()}`;
+      } catch {
+        document.getElementById("cuaca").innerText = "Cuaca: -";
+      }
+    }
+    getWeather();
+  </script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Form Tugas Siswa</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body { background-color: #e6f0ff; }
+    .container { margin-top: 30px; }
+    .card { border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    textarea { resize: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <!-- FORM GURU -->
+    <div class="col-md-6">
+      <div class="card p-4 bg-white">
+        <h4 class="text-primary">Input Tugas Guru</h4>
+        <input type="password" class="form-control my-2" id="kodeAkses" placeholder="Masukkan Kode Akses">
+
+        <div class="input-group my-2">
+          <select class="form-control" id="guruSelect"></select>
+        </div>
+
+        <input type="text" class="form-control my-2" id="taskName" placeholder="Nama Tugas">
+
+        <div class="input-group my-2">
+          <select class="form-control" id="kelasSelect"></select>
+        </div>
+
+        <textarea id="taskDesc" rows="3" class="form-control my-2" placeholder="Uraian Tugas"></textarea>
+        <input type="file" id="taskFile" class="form-control my-2" accept=".pdf, image/jpeg">
+        <button class="btn btn-primary btn-block" onclick="uploadTugas()">Kirim Tugas</button>
+
+        <hr>
+        <h5 class="text-danger">Tambah Guru & Kelas</h5>
+        <input type="password" class="form-control my-2" id="kodeTambah" placeholder="Kode Akses Tambah Guru/Kelas">
+
+        <div class="input-group my-2">
+          <input type="text" id="newGuru" class="form-control" placeholder="Nama Guru Baru">
+          <div class="input-group-append">
+            <button class="btn btn-outline-primary" onclick="tambahGuru()">+ Guru</button>
+          </div>
+        </div>
+
+        <div class="input-group my-2">
+          <input type="text" id="newKelas" class="form-control" placeholder="Nama Kelas Baru">
+          <div class="input-group-append">
+            <button class="btn btn-outline-success" onclick="tambahKelas()">+ Kelas</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FORM SISWA -->
+    <div class="col-md-6">
+      <div class="card p-4 bg-white">
+        <h4 class="text-primary">Lihat Tugas Siswa</h4>
+        <select class="form-control my-2" id="kelasLihatSelect"></select>
+        <button class="btn btn-secondary btn-block" onclick="lihatTugas()">Tampilkan Tugas</button>
+        <div id="daftarTugas" class="mt-3"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
+    authDomain: "loginsmartschool-4f57d.firebaseapp.com",
+    databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
+    projectId: "loginsmartschool-4f57d",
+    storageBucket: "loginsmartschool-4f57d.appspot.com",
+    messagingSenderId: "166215127727",
+    appId: "1:166215127727:web:6888450f047c203871fa5a",
+    measurementId: "G-8ZWH6QBTFV"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const storage = firebase.storage();
+  const kodeAkses = "5UGJV99QQT";
+
+  function tambahKelas() {
+    const kode = document.getElementById("kodeTambah").value.trim();
+    if (kode !== kodeAkses) return alert("Kode akses salah!");
+    const kelas = document.getElementById("newKelas").value.trim();
+    if (kelas) {
+      db.ref("kelas/" + kelas).set(true);
+      loadKelas();
+      document.getElementById("newKelas").value = '';
+    }
+  }
+
+  function tambahGuru() {
+    const kode = document.getElementById("kodeTambah").value.trim();
+    if (kode !== kodeAkses) return alert("Kode akses salah!");
+    const guru = document.getElementById("newGuru").value.trim();
+    if (guru) {
+      db.ref("guru/" + guru).set(true);
+      loadGuru();
+      document.getElementById("newGuru").value = '';
+    }
+  }
+
+  function uploadTugas() {
+    const kode = document.getElementById("kodeAkses").value.trim();
+    if (kode !== kodeAkses) return alert("Kode akses salah!");
+    const nama = document.getElementById("taskName").value.trim();
+    const kelas = document.getElementById("kelasSelect").value;
+    const guru = document.getElementById("guruSelect").value;
+    const uraian = document.getElementById("taskDesc").value.trim();
+    const file = document.getElementById("taskFile").files[0];
+    if (!nama || !uraian || !guru) return alert("Isi semua data tugas!");
+
+    const simpanData = (path = "") => {
+      const id = db.ref().child("tugas").push().key;
+      db.ref("tugas/" + kelas + "/" + id).set({ nama, guru, uraian, file: path });
+      alert("Tugas berhasil dikirim!");
+    };
+
+    if (!file) return simpanData("");
+
+    const filename = Date.now() + "_" + file.name;
+    const tugasRef = storage.ref("tugas/" + filename);
+    if (file.type.includes("image")) {
+      compressImage(file, blob => tugasRef.put(blob).then(snap => simpanData(snap.ref.fullPath)));
+    } else {
+      tugasRef.put(file).then(snap => simpanData(snap.ref.fullPath));
+    }
+  }
+
+  function compressImage(file, callback) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const img = new Image();
+      img.onload = function () {
+        const canvas = document.createElement("canvas");
+        const scale = 600 / img.width;
+        canvas.width = 600;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(callback, "image/jpeg", 0.6);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function loadKelas() {
+    db.ref("kelas").once("value", snap => {
+      let options = "";
+      snap.forEach(child => {
+        options += `<option>${child.key}</option>`;
+      });
+      document.getElementById("kelasSelect").innerHTML = options;
+      document.getElementById("kelasLihatSelect").innerHTML = options;
+    });
+  }
+
+  function loadGuru() {
+    db.ref("guru").once("value", snap => {
+      let options = "";
+      snap.forEach(child => {
+        options += `<option>${child.key}</option>`;
+      });
+      document.getElementById("guruSelect").innerHTML = options;
+    });
+  }
+
+  function lihatTugas() {
+  const kelas = document.getElementById("kelasLihatSelect").value;
+  db.ref("tugas/" + kelas).once("value", snap => {
+    const div = document.getElementById("daftarTugas");
+    div.innerHTML = "";
+    snap.forEach(child => {
+      const data = child.val();
+
+      let tugasHTML = `
+        <div class="card mb-2 p-3">
+          <h5>${data.nama}</h5>
+          <p><strong>Guru:</strong> ${data.guru}</p>
+          <p>${data.uraian}</p>
+      `;
+
+      if (data.file) {
+        storage.ref(data.file).getDownloadURL().then(url => {
+          tugasHTML += `<a href="${url}" target="_blank" class="btn btn-sm btn-primary">Download Tugas</a>`;
+          tugasHTML += `</div>`;
+          div.innerHTML += tugasHTML;
+        }).catch(() => {
+          // Jika file tidak ditemukan (misal terhapus), tetap tampilkan deskripsi tugas
+          tugasHTML += `<p><em>File tidak tersedia</em></p></div>`;
+          div.innerHTML += tugasHTML;
+        });
+      } else {
+        tugasHTML += `<p><em>Tidak ada file</em></p></div>`;
+        div.innerHTML += tugasHTML;
+      }
+    });
+  });
+}
+
+
+  loadKelas();
+  loadGuru();
+</script>
+</body>
+</html>

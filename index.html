@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Login & Daftar Portal Sekolah</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background: linear-gradient(to right, #1a2980, #26d0ce);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .judul-app {
+      font-size: 28px;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.5);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(16px);
+      padding: 40px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 420px;
+      color: #fff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .input-group {
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .input-group input,
+    .input-group select {
+      width: 100%;
+      padding: 12px 45px 12px 40px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 15px;
+    }
+    .input-group input::placeholder { color: #fff; }
+    .input-group select, .input-group option {
+      color: #fff;
+      background-color: #1a2980;
+    }
+    .input-group i {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      transform: translateY(-50%);
+      color: #eee;
+    }
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background-color: #00c6ff;
+      color: white;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #008bb5;
+    }
+    .link {
+      text-align: center;
+      margin-top: 10px;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 14px;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="judul-app">APLIKASI SMARTSCHOOL SMAN 1 SUNGGAL</div>
+
+  <div class="container">
+    <!-- LOGIN FORM -->
+    <form id="loginForm">
+      <h2>Login</h2>
+      <div class="input-group">
+        <i class="fa fa-user"></i>
+        <input type="text" id="loginUsername" placeholder="Nama Pengguna" required />
+      </div>
+      <div class="input-group">
+        <i class="fa fa-lock"></i>
+        <input type="password" id="loginPassword" placeholder="Kata Sandi" required />
+      </div>
+      <div class="input-group">
+        <i class="fa fa-user-shield"></i>
+        <select id="loginLevel" required>
+          <option value="" disabled selected>-- Pilih Level --</option>
+          <option value="kepala">Kepala Sekolah</option>
+          <option value="admin">Admin</option>
+          <option value="guru">Guru</option>
+          <option value="tu">Tata Usaha</option>
+          <option value="pegawai">Pegawai</option>
+          <option value="wali">Wali Kelas</option>
+          <option value="siswa">Siswa</option>
+        </select>
+      </div>
+      <button type="submit" class="btn">Masuk</button>
+      <div class="link" onclick="showForm('daftar')">Belum punya akun? Daftar</div>
+    </form>
+
+    <!-- DAFTAR FORM -->
+    <form id="daftarForm" class="hidden">
+      <h2>Daftar Akun</h2>
+      <div class="input-group">
+        <i class="fa fa-user"></i>
+        <input type="text" id="daftarUsername" placeholder="Buat Nama Pengguna" required />
+      </div>
+      <div class="input-group">
+        <i class="fa fa-lock"></i>
+        <input type="password" id="daftarPassword" placeholder="Buat Kata Sandi" required />
+      </div>
+      <div class="input-group">
+        <i class="fa fa-user-shield"></i>
+        <select id="daftarLevel" required>
+          <option value="" disabled selected>-- Pilih Level --</option>
+          <option value="kepala">Kepala Sekolah</option>
+          <option value="admin">Admin</option>
+          <option value="guru">Guru</option>
+          <option value="tu">Tata Usaha</option>
+          <option value="pegawai">Pegawai</option>
+          <option value="wali">Wali Kelas</option>
+          <option value="siswa">Siswa</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <i class="fa fa-key"></i>
+        <input type="text" id="daftarKode" placeholder="Kode Akses (wajib)" required />
+      </div>
+      <button type="submit" class="btn">Daftar</button>
+      <div class="link" onclick="showForm('login')">Sudah punya akun? Login</div>
+    </form>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Ganti config ini dengan milikmu
+    const firebaseConfig = {
+  apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
+  authDomain: "loginsmartschool-4f57d.firebaseapp.com",
+  databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
+  projectId: "loginsmartschool-4f57d",
+  storageBucket: "loginsmartschool-4f57d.firebasestorage.app",
+  messagingSenderId: "166215127727",
+  appId: "1:166215127727:web:6888450f047c203871fa5a",
+  measurementId: "G-8ZWH6QBTFV"
+};
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Toggle Form
+    function showForm(mode) {
+      document.getElementById('loginForm').classList.toggle('hidden', mode === 'daftar');
+      document.getElementById('daftarForm').classList.toggle('hidden', mode === 'login');
+    }
+
+    // Login Handler
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const user = loginUsername.value.trim();
+      const pass = loginPassword.value.trim();
+      const level = loginLevel.value;
+
+      db.ref("users/" + user).once("value").then(snapshot => {
+        if (!snapshot.exists()) return alert("Pengguna tidak ditemukan!");
+        const data = snapshot.val();
+        if (data.password === pass && data.level === level) {
+          switch(level) {
+            case "kepala": window.location.href = "portal kepala sekolah.html"; break;
+            case "admin": window.location.href = "Dashboard.html"; break;
+            case "guru": window.location.href = "portal guru.html"; break;
+            case "tu": window.location.href = "portal tu.html"; break;
+            case "pegawai": window.location.href = "portal pegawai.html"; break;
+            case "wali": window.location.href = "portal wali.html"; break;
+            case "siswa": window.location.href = "portal siswa.html"; break;
+            default: window.location.href = "portal aplikasi sekolah.html";
+          }
+        } else {
+          alert("Kata sandi atau level salah.");
+        }
+      });
+    });
+
+    // Daftar Handler
+    document.getElementById("daftarForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const user = daftarUsername.value.trim();
+      const pass = daftarPassword.value.trim();
+      const level = daftarLevel.value;
+      const kode = daftarKode.value.trim();
+
+      if (kode !== "5UGJV99QQT") {
+        alert("Kode akses salah!");
+        return;
+      }
+
+      db.ref("users/" + user).once("value").then(snapshot => {
+        if (snapshot.exists()) {
+          alert("Username sudah digunakan!");
+        } else {
+          db.ref("users/" + user).set({
+            password: pass,
+            level: level
+          });
+          alert("Akun berhasil dibuat! Silakan login.");
+          showForm('login');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

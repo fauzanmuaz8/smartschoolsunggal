@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Menu Kurikulum SMA 2025</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; background-color: #f0f8ff; }
+    .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px #ccc; max-width: 900px; margin: auto; }
+    label { font-weight: bold; margin-top: 10px; display: block; }
+    select, input, textarea { width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; }
+    button { margin-top: 10px; padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    .danger { background-color: #dc3545; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #e0e0e0; }
+    .filter { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>📚 Menu Kurikulum SMA 2025</h2>
+
+    <label for="kodeAkses">Masukkan Kode Akses (untuk Tambah/Edit/Hapus)</label>
+    <input type="password" id="kodeAkses" placeholder="Masukkan kode akses..." />
+
+    <div class="form-input">
+      <label>Fase (E untuk Kelas X, F untuk XI/XII)</label>
+      <select id="fase">
+        <option value="">-- Pilih Fase --</option>
+        <option value="E">Fase E (Kelas X)</option>
+        <option value="F">Fase F (Kelas XI/XII)</option>
+      </select>
+
+      <label>Kelas</label>
+      <select id="kelas">
+        <option value="">-- Pilih Kelas --</option>
+        <option value="X">X</option>
+        <option value="XI">XI</option>
+        <option value="XII">XII</option>
+      </select>
+
+      <label>Mata Pelajaran</label>
+      <input type="text" id="mapel" placeholder="Contoh: Biologi, Sejarah, dll" />
+
+      <label>Capaian Pembelajaran (CP)</label>
+      <textarea id="cp" rows="2" placeholder="Masukkan Capaian Pembelajaran"></textarea>
+
+      <label>Tujuan Pembelajaran (TP)</label>
+      <textarea id="tp" rows="2" placeholder="Masukkan Tujuan Pembelajaran"></textarea>
+
+      <label>Catatan Tambahan</label>
+      <textarea id="catatan" rows="2" placeholder="Tambahan jika ada..."></textarea>
+
+      <button onclick="tambahKurikulum()">➕ Tambah / Simpan Kurikulum</button>
+    </div>
+
+    <div class="filter">
+      <select id="filterFase" onchange="tampilkanKurikulum()">
+        <option value="">Filter Fase</option>
+        <option value="E">Fase E</option>
+        <option value="F">Fase F</option>
+      </select>
+
+      <select id="filterKelas" onchange="tampilkanKurikulum()">
+        <option value="">Filter Kelas</option>
+        <option value="X">X</option>
+        <option value="XI">XI</option>
+        <option value="XII">XII</option>
+      </select>
+
+      <input type="text" id="filterMapel" placeholder="Cari Mapel..." oninput="tampilkanKurikulum()" />
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Fase</th>
+          <th>Kelas</th>
+          <th>Mapel</th>
+          <th>CP</th>
+          <th>TP</th>
+          <th>Catatan</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="tabelKurikulum">
+        <tr><td colspan="7" align="center">Memuat data...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
+      authDomain: "loginsmartschool-4f57d.firebaseapp.com",
+      databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
+      projectId: "loginsmartschool-4f57d",
+      storageBucket: "loginsmartschool-4f57d.firebasestorage.app",
+      messagingSenderId: "166215127727",
+      appId: "1:166215127727:web:6888450f047c203871fa5a",
+      measurementId: "G-8ZWH6QBTFV"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    let editId = null;
+
+    function tambahKurikulum() {
+      const kode = document.getElementById("kodeAkses").value.trim();
+      if (kode !== "5UGJV99QQT") return alert("Kode akses salah!");
+
+      const data = {
+        fase: document.getElementById("fase").value,
+        kelas: document.getElementById("kelas").value,
+        mapel: document.getElementById("mapel").value.trim(),
+        cp: document.getElementById("cp").value.trim(),
+        tp: document.getElementById("tp").value.trim(),
+        catatan: document.getElementById("catatan").value.trim(),
+      };
+
+      if (!data.fase || !data.kelas || !data.mapel || !data.cp || !data.tp)
+        return alert("Isi semua data wajib!");
+
+      if (editId) {
+        db.ref("kurikulum/" + editId).set(data).then(() => {
+          alert("Data diperbarui!");
+          resetForm();
+        });
+      } else {
+        db.ref("kurikulum").push(data).then(() => {
+          alert("Data ditambahkan!");
+          resetForm();
+        });
+      }
+    }
+
+    function tampilkanKurikulum() {
+      const tbody = document.getElementById("tabelKurikulum");
+      tbody.innerHTML = `<tr><td colspan="7">Memuat data...</td></tr>`;
+
+      const fase = document.getElementById("filterFase").value;
+      const kelas = document.getElementById("filterKelas").value;
+      const mapel = document.getElementById("filterMapel").value.toLowerCase();
+
+      db.ref("kurikulum").once("value", snapshot => {
+        const rows = [];
+        snapshot.forEach(child => {
+          const d = child.val();
+          const id = child.key;
+          if (
+            (!fase || d.fase === fase) &&
+            (!kelas || d.kelas === kelas) &&
+            (!mapel || d.mapel.toLowerCase().includes(mapel))
+          ) {
+            rows.push(`
+              <tr>
+                <td>${d.fase}</td>
+                <td>${d.kelas}</td>
+                <td>${d.mapel}</td>
+                <td>${d.cp}</td>
+                <td>${d.tp}</td>
+                <td>${d.catatan || "-"}</td>
+                <td>
+                  <button onclick="editKurikulum('${id}')">✏️</button>
+                  <button class="danger" onclick="hapusKurikulum('${id}')">🗑️</button>
+                </td>
+              </tr>`);
+          }
+        });
+        tbody.innerHTML = rows.length ? rows.join("") : `<tr><td colspan="7">Tidak ada data.</td></tr>`;
+      });
+    }
+
+    function editKurikulum(id) {
+      db.ref("kurikulum/" + id).once("value", snap => {
+        const d = snap.val();
+        document.getElementById("fase").value = d.fase;
+        document.getElementById("kelas").value = d.kelas;
+        document.getElementById("mapel").value = d.mapel;
+        document.getElementById("cp").value = d.cp;
+        document.getElementById("tp").value = d.tp;
+        document.getElementById("catatan").value = d.catatan || "";
+        editId = id;
+        window.scrollTo(0, 0);
+      });
+    }
+
+    function hapusKurikulum(id) {
+      const kode = document.getElementById("kodeAkses").value.trim();
+      if (kode !== "5UGJV99QQT") return alert("Kode akses salah!");
+      if (confirm("Yakin hapus data ini?")) {
+        db.ref("kurikulum/" + id).remove().then(() => tampilkanKurikulum());
+      }
+    }
+
+    function resetForm() {
+      document.getElementById("fase").value = "";
+      document.getElementById("kelas").value = "";
+      document.getElementById("mapel").value = "";
+      document.getElementById("cp").value = "";
+      document.getElementById("tp").value = "";
+      document.getElementById("catatan").value = "";
+      editId = null;
+      tampilkanKurikulum();
+    }
+
+    window.onload = tampilkanKurikulum;
+  </script>
+</body>
+</html>

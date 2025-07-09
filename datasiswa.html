@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Data Siswa SMAN</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      animation: rainbow 10s linear infinite;
+      background-size: 400% 400%;
+    }
+
+    @keyframes rainbow {
+      0% { background: linear-gradient(270deg, #ff9a9e, #fad0c4, #fad0c4, #ff9a9e); background-position: 0% 50%; }
+      50% { background: linear-gradient(270deg, #a18cd1, #fbc2eb, #fad0c4, #ffdde1); background-position: 100% 50%; }
+      100% { background: linear-gradient(270deg, #ff9a9e, #fad0c4, #fad0c4, #ff9a9e); background-position: 0% 50%; }
+    }
+
+    .container {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 1000px;
+      margin: 40px auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      text-align: center;
+      color: #0d47a1;
+      margin-bottom: 20px;
+    }
+
+    input[type='file'], input[type='text'], button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .card {
+      background-color: #f0f8ff;
+      border: 1px solid #90caf9;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    label {
+      font-weight: bold;
+      color: #0d47a1;
+    }
+
+    .scroll-container {
+      max-height: 500px;
+      overflow-y: auto;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 6px;
+      background: #fafafa;
+    }
+
+    #topSearch {
+      max-width: 500px;
+      margin: 20px auto 0;
+      background: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+  <!-- Search NISN Top Section -->
+  <div id="topSearch">
+    <input type="text" id="cariNISN" placeholder="🔍 Masukan NISN Siswa Untuk Mencari Data" oninput="cariSiswa()" />
+  </div>
+
+  <div class="container">
+    <h2>📘 Data Siswa SMAN 1 SUNGGAL</h2>
+
+    <button onclick="downloadTemplate()">📥 Download Template Excel</button>
+    <input type="file" accept=".xlsx, .xls" onchange="importExcel(event)" />
+
+    <div id="detailSiswa" class="scroll-container"></div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
+      authDomain: "loginsmartschool-4f57d.firebaseapp.com",
+      databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
+      projectId: "loginsmartschool-4f57d",
+      storageBucket: "loginsmartschool-4f57d.firebasestorage.app",
+      messagingSenderId: "166215127727",
+      appId: "1:166215127727:web:6888450f047c203871fa5a",
+      measurementId: "G-8ZWH6QBTFV"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const kolomTemplate = [
+      'no', 'nama', 'nipd', 'jk', 'nisn', 'tempat_lahir', 'tanggal_lahir', 'nik', 'agama', 'alamat', 'rt', 'rw',
+      'dusun', 'kelurahan', 'kecamatan', 'kode_pos', 'jenis_tinggal', 'alat_transportasi', 'telepon', 'hp', 'email',
+      'skhun', 'penerima_kps', 'nama_ayah', 'tahun_lahir_ayah', 'jenjang_pendidikan_ayah', 'pekerjaan_ayah',
+      'penghasilan_ayah', 'nik_ayah', 'nama_ibu', 'tahun_lahir_ibu', 'jenjang_pendidikan_ibu', 'pekerjaan_ibu',
+      'penghasilan_ibu', 'nik_ibu', 'nama_wali', 'tahun_lahir_wali', 'jenjang_pendidikan_wali', 'pekerjaan_wali',
+      'penghasilan_wali', 'nik_wali', 'rombel_saat_ini', 'no_peserta_un', 'no_seri_ijazah', 'penerima_kip',
+      'nomor_kks', 'no_registrasi_akta', 'bank', 'nomor_rekening_bank', 'rekening_atas_nama',
+      'layak_pip_usulan_sekolah', 'berkebutuhan_khusus', 'sekolah_asal', 'anak_ke_berapa',
+      'lintang', 'bujur', 'no_kk', 'berat_badan', 'tinggi_badan', 'lingkar_kepala',
+      'jumlah_saudara_kandung', 'jarak_rumah_kesekolah'
+    ];
+
+    function downloadTemplate() {
+      const ws = XLSX.utils.json_to_sheet([], { header: kolomTemplate });
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "TemplateSiswa");
+      XLSX.writeFile(wb, "template_siswa.xlsx");
+    }
+
+    function importExcel(evt) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: 'array' });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const json = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+    json.forEach((row) => {
+      let nisn = row['nisn']?.toString().trim();
+      if (!nisn) return;
+
+      // Normalisasi field: ubah key ke lowercase dan tanpa spasi
+      let cleanData = {};
+      kolomTemplate.forEach(kolom => {
+        cleanData[kolom] = row[kolom] || "";
+      });
+
+      db.ref("datasiswa/" + nisn).set(cleanData);
+    });
+
+    alert("Data berhasil diupload dan ditimpa berdasarkan NISN.");
+  };
+  reader.readAsArrayBuffer(evt.target.files[0]);
+}
+
+function cariSiswa() {
+  const nisn = document.getElementById("cariNISN").value.trim();
+  const detail = document.getElementById("detailSiswa");
+  if (!nisn) {
+    detail.innerHTML = "";
+    return;
+  }
+
+  db.ref("datasiswa/" + nisn).once("value", (snap) => {
+    if (snap.exists()) {
+      const data = snap.val();
+      let html = '';
+
+      // Tampilkan data sesuai urutan kolomTemplate
+      kolomTemplate.forEach((key) => {
+        const val = data[key];
+        if (key.toLowerCase().includes('empty')) return; // skip kolom kosong
+        html += `
+          <div class="card">
+            <label>${key.replace(/_/g, ' ').toUpperCase()}</label>
+            <div>${val || '-'}</div>
+          </div>
+        `;
+      });
+
+      detail.innerHTML = html;
+    } else {
+      detail.innerHTML = "<p>Data siswa tidak ditemukan.</p>";
+    }
+  });
+}
+
+  </script>
+</body>
+</html>

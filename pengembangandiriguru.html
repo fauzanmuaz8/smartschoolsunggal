@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pengembangan Diri Guru - SMAN 1 Sunggal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet);
+      background-size: 1400% 1400%;
+      animation: rainbow 30s ease infinite;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    @keyframes rainbow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .container {
+      max-width: 800px;
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.2);
+    }
+    .card {
+      border-radius: 15px;
+    }
+    @media print {
+      #filterPanel, #formKegiatan, .btn, input, select, textarea { display: none !important; }
+    }
+  </style>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
+      authDomain: "loginsmartschool-4f57d.firebaseapp.com",
+      databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
+      projectId: "loginsmartschool-4f57d",
+      storageBucket: "loginsmartschool-4f57d.appspot.com",
+      messagingSenderId: "166215127727",
+      appId: "1:166215127727:web:6888450f047c203871fa5a",
+      measurementId: "G-8ZWH6QBTFV"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const storage = getStorage(app);
+
+    let isAdmin = false;
+    const kodeAdmin = "5UGJV99QQT";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("btnSimpan").addEventListener("click", simpanKegiatan);
+      document.getElementById("btnAdmin").addEventListener("click", verifikasiKode);
+      document.getElementById("filterBulan").addEventListener("change", tampilkanKegiatan);
+      document.getElementById("filterJenis").addEventListener("change", tampilkanKegiatan);
+      document.getElementById("btnCetak").addEventListener("click", () => window.print());
+      tampilkanKegiatan();
+    });
+
+    function verifikasiKode() {
+      const kode = document.getElementById("adminCode").value;
+      if (kode === kodeAdmin) {
+        isAdmin = true;
+        alert("Mode admin aktif");
+        tampilkanKegiatan();
+      } else {
+        alert("Kode salah");
+      }
+    }
+
+    function simpanKegiatan() {
+      const nama = document.getElementById("namaGuru").value;
+      const jenis = document.getElementById("jenisKegiatan").value;
+      const tanggal = document.getElementById("tanggal").value;
+      const uraian = document.getElementById("uraian").value;
+      const file = document.getElementById("fileBukti").files[0];
+
+      if (!nama || !jenis || !tanggal || !uraian) {
+        alert("Mohon lengkapi semua data.");
+        return;
+      }
+
+      if (file) {
+        const storageRef = sRef(storage, 'pengembangan/' + Date.now() + '_' + file.name);
+        uploadBytes(storageRef, file).then(snapshot => {
+          getDownloadURL(snapshot.ref).then(url => {
+            push(ref(db, "pengembangan/"), { nama, jenis, tanggal, uraian, bukti: url });
+          });
+        });
+      } else {
+        push(ref(db, "pengembangan/"), { nama, jenis, tanggal, uraian, bukti: "" });
+      }
+
+      document.getElementById("formKegiatan").reset();
+    }
+
+    function hapusKegiatan(id) {
+      if (isAdmin && confirm("Yakin hapus data ini?")) {
+        remove(ref(db, `pengembangan/${id}`));
+      }
+    }
+
+    function tampilkanKegiatan() {
+      const daftar = document.getElementById("daftarKegiatan");
+      const bulanFilter = document.getElementById("filterBulan").value;
+      const jenisFilter = document.getElementById("filterJenis").value;
+      const kegRef = ref(db, "pengembangan/");
+      onValue(kegRef, snapshot => {
+        const data = snapshot.val();
+        daftar.innerHTML = "";
+        for (let id in data) {
+          const k = data[id];
+          const bulanData = k.tanggal?.split("-")[1];
+          if ((bulanFilter && bulanData !== bulanFilter) || (jenisFilter && k.jenis !== jenisFilter)) continue;
+          daftar.innerHTML += `
+            <div class='p-3 mb-3 bg-light rounded'>
+              <strong>${k.nama}</strong> - ${k.jenis} (${k.tanggal})
+              <p>${k.uraian}</p>
+              ${k.bukti ? `<a href="${k.bukti}" target="_blank">Lihat Bukti</a><br>` : ""}
+              ${isAdmin ? `<button class='btn btn-sm btn-danger mt-2' onclick="hapusKegiatan('${id}')">Hapus</button>` : ""}
+            </div>
+          `;
+        }
+      });
+    }
+
+    window.hapusKegiatan = hapusKegiatan;
+  </script>
+</head>
+<body>
+  <div class="container py-5">
+    <h2 class="text-center mb-4">Pengembangan Diri Guru</h2>
+    <div class="mb-3" id="filterPanel">
+      <div class="row g-2">
+        <div class="col">
+          <select class="form-select" id="filterBulan">
+            <option value="">Filter Bulan</option>
+            <option value="01">Januari</option>
+            <option value="02">Februari</option>
+            <option value="03">Maret</option>
+            <option value="04">April</option>
+            <option value="05">Mei</option>
+            <option value="06">Juni</option>
+            <option value="07">Juli</option>
+            <option value="08">Agustus</option>
+            <option value="09">September</option>
+            <option value="10">Oktober</option>
+            <option value="11">November</option>
+            <option value="12">Desember</option>
+          </select>
+        </div>
+        <div class="col">
+          <select class="form-select" id="filterJenis">
+            <option value="">Filter Jenis Kegiatan</option>
+            <option value="Seminar">Seminar</option>
+            <option value="Pelatihan">Pelatihan</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </div>
+        <div class="col">
+          <input type="password" class="form-control" id="adminCode" placeholder="Kode Admin">
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-secondary" id="btnAdmin">Mode Admin</button>
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-success" id="btnCetak">Cetak</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-4 mb-4" id="formKegiatan">
+      <h5>Form Kegiatan</h5>
+      <form>
+        <input type="text" id="namaGuru" class="form-control mb-2" placeholder="Nama Guru">
+        <select class="form-select mb-2" id="jenisKegiatan">
+          <option value="">Pilih Jenis Kegiatan</option>
+          <option value="Seminar">Seminar</option>
+          <option value="Pelatihan">Pelatihan</option>
+          <option value="Workshop">Workshop</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+        <input type="date" id="tanggal" class="form-control mb-2">
+        <textarea id="uraian" class="form-control mb-2" placeholder="Uraian Kegiatan"></textarea>
+        <input type="file" id="fileBukti" class="form-control mb-3">
+        <button type="button" class="btn btn-primary" id="btnSimpan">Simpan</button>
+      </form>
+    </div>
+
+    <div class="card p-4">
+      <h5>Riwayat Kegiatan</h5>
+      <div id="daftarKegiatan"></div>
+    </div>
+  </div>
+</body>
+</html>
