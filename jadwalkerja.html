@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jadwal Kerja Pegawai</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+</head>
+<body class="bg-light">
+<div class="container py-4">
+  <h2 class="text-center text-primary mb-4">🗓️ Jadwal Kerja Pegawai</h2>
+
+  <form id="formJadwal" class="card p-4 mb-4">
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <input type="text" id="nama" class="form-control" placeholder="Nama Pegawai" required>
+      </div>
+      <div class="col-md-4">
+        <input type="text" id="jabatan" class="form-control" placeholder="Jabatan" required>
+      </div>
+      <div class="col-md-4">
+        <select id="hari" class="form-select" required>
+          <option value="">Pilih Hari</option>
+          <option>Senin</option>
+          <option>Selasa</option>
+          <option>Rabu</option>
+          <option>Kamis</option>
+          <option>Jumat</option>
+          <option>Sabtu</option>
+        </select>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <input type="time" id="jamMasuk" class="form-control" required>
+      </div>
+      <div class="col-md-6">
+        <input type="time" id="jamKeluar" class="form-control" required>
+      </div>
+    </div>
+    <div class="mb-3">
+      <input type="text" id="keterangan" class="form-control" placeholder="Keterangan (opsional)">
+    </div>
+    <button type="submit" class="btn btn-success">+ Tambah Jadwal</button>
+  </form>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <input type="text" id="filterNama" class="form-control" placeholder="Cari Nama / Jabatan" onkeyup="tampilkanJadwal()">
+    </div>
+    <div class="col-md-4">
+      <select id="filterHari" class="form-select" onchange="tampilkanJadwal()">
+        <option value="">Semua Hari</option>
+        <option>Senin</option>
+        <option>Selasa</option>
+        <option>Rabu</option>
+        <option>Kamis</option>
+        <option>Jumat</option>
+        <option>Sabtu</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <button class="btn btn-outline-success w-100" onclick="exportExcel()">⬇️ Export Excel</button>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered text-center">
+      <thead class="table-info">
+        <tr>
+          <th>Nama</th>
+          <th>Jabatan</th>
+          <th>Hari</th>
+          <th>Jam Masuk</th>
+          <th>Jam Keluar</th>
+          <th>Keterangan</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="tabelJadwal"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const firebaseConfig = {
+    const firebaseConfig = {
+  apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
+  authDomain: "loginsmartschool-4f57d.firebaseapp.com",
+  databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
+  projectId: "loginsmartschool-4f57d",
+  storageBucket: "loginsmartschool-4f57d.firebasestorage.app",
+  messagingSenderId: "166215127727",
+  appId: "1:166215127727:web:6888450f047c203871fa5a",
+  measurementId: "G-8ZWH6QBTFV"
+};
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const form = document.getElementById("formJadwal");
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    const nama = nama.value.trim();
+    const jabatan = jabatan.value.trim();
+    const hari = document.getElementById("hari").value;
+    const masuk = document.getElementById("jamMasuk").value;
+    const keluar = document.getElementById("jamKeluar").value;
+    const keter = document.getElementById("keterangan").value.trim();
+
+    // Notifikasi bentrok
+    db.ref("jadwal_kerja_pegawai").once("value", snap => {
+      let bentrok = false;
+      snap.forEach(child => {
+        const d = child.val();
+        if (d.hari === hari && d.nama.toLowerCase() === nama.toLowerCase()) {
+          if ((masuk >= d.jamMasuk && masuk < d.jamKeluar) ||
+              (keluar > d.jamMasuk && keluar <= d.jamKeluar)) {
+            bentrok = true;
+          }
+        }
+      });
+
+      if (bentrok) {
+        alert("⚠️ Jadwal bentrok dengan jadwal sebelumnya!");
+      } else {
+        db.ref("jadwal_kerja_pegawai").push({ nama, jabatan, hari, jamMasuk: masuk, jamKeluar: keluar, keterangan: keter });
+        form.reset();
+        tampilkanJadwal();
+      }
+    });
+  });
+
+  function tampilkanJadwal() {
+    const filter = document.getElementById("filterNama").value.toLowerCase();
+    const hari = document.getElementById("filterHari").value;
+    const tabel = document.getElementById("tabelJadwal");
+    tabel.innerHTML = "";
+
+    db.ref("jadwal_kerja_pegawai").once("value", snapshot => {
+      snapshot.forEach(child => {
+        const d = child.val();
+        if ((filter && !d.nama.toLowerCase().includes(filter) && !d.jabatan.toLowerCase().includes(filter)) ||
+            (hari && d.hari !== hari)) return;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${d.nama}</td>
+          <td>${d.jabatan}</td>
+          <td>${d.hari}</td>
+          <td>${d.jamMasuk}</td>
+          <td>${d.jamKeluar}</td>
+          <td>${d.keterangan || '-'}</td>
+          <td><button class='btn btn-sm btn-danger' onclick='hapus("${child.key}")'>Hapus</button></td>
+        `;
+        tabel.appendChild(tr);
+      });
+    });
+  }
+
+  function hapus(id) {
+    const kode = prompt("Masukkan kode akses untuk hapus:");
+    if (kode === "pegawaijuara") {
+      db.ref("jadwal_kerja_pegawai/" + id).remove();
+      tampilkanJadwal();
+    } else {
+      alert("Kode salah!");
+    }
+  }
+
+  function exportExcel() {
+    const table = document.querySelector("table").outerHTML;
+    const blob = new Blob([
+      `<html><head><meta charset='utf-8'></head><body>${table}</body></html>`
+    ], { type: 'application/vnd.ms-excel' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "jadwal_kerja_pegawai.xls";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  window.onload = tampilkanJadwal;
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
