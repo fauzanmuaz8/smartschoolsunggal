@@ -2,217 +2,201 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Surat Panggilan Orang Tua - BK</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
-
+  <title>Surat Panggilan Orang Tua</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    @media print {
-      body {
-        margin: 4cm 3cm 4cm 3cm;
-      }
+    body {
+      font-family: 'Times New Roman', serif;
+      background-color: #f2f9ff;
+      padding: 20px;
     }
     .a4 {
       width: 21cm;
       min-height: 29.7cm;
-      padding: 2rem;
-      background: white;
       margin: auto;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
-      font-size: 14px;
-      color: #000;
-      font-family: 'Times New Roman', serif;
+      background: white;
+      padding: 4cm 3cm;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     }
-    .kop-surat {
-      text-align: center;
-      margin-bottom: 1rem;
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .a4, .a4 * {
+        visibility: visible;
+      }
+      .a4 {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+      }
+      .no-print {
+        display: none;
+      }
     }
-    .kop-surat img {
-      max-width: 100%;
+    .kop-img {
+      width: 100%;
       height: auto;
+      margin-bottom: 20px;
     }
-    .line {
-      border-bottom: 2px solid black;
-      margin-top: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    .animate-fade {
-      animation: fadeIn 1s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
+    .form-label {
+      font-weight: bold;
     }
   </style>
 </head>
-<body class="bg-light">
+<body>
 
-<div class="container py-4">
-  <div class="card shadow animate-fade">
-    <div class="card-header bg-primary text-white">
-      <h4 class="mb-0">Form Surat Panggilan Orang Tua</h4>
+<div class="container">
+  <div class="text-end my-3 no-print">
+    <button class="btn btn-primary" onclick="window.print()">
+      <i class="bi bi-printer"></i> Cetak Surat
+    </button>
+  </div>
+
+  <div class="a4" id="surat">
+    <img src="KOP SURAT SMAN 1 SUNGGAL FIX.jpg" class="kop-img" alt="Kop Surat">
+
+    <h5 class="text-center fw-bold text-decoration-underline">SURAT PANGGILAN ORANG TUA/WALI</h5>
+    <p class="text-center">Nomor: <span id="nomorSuratView"></span></p>
+
+    <p>Dengan hormat,</p>
+    <p>Sehubungan dengan kondisi siswa berikut:</p>
+    <table class="table table-borderless w-75">
+      <tr>
+        <td>Nomor Surat</td>
+        <td>: <span id="nomorSuratDisplay"></span></td>
+      </tr>
+      <tr>
+        <td>Nama Siswa</td>
+        <td>: <span id="namaSiswaDisplay"></span></td>
+      </tr>
+      <tr>
+        <td>Kelas</td>
+        <td>: <span id="kelasSiswaDisplay"></span></td>
+      </tr>
+      <tr>
+        <td>Persoalan</td>
+        <td>: <span id="persoalanDisplay"></span></td>
+      </tr>
+      <tr>
+        <td>Panggilan ke</td>
+        <td>: <span id="panggilanKeDisplay"></span></td>
+      </tr>
+    </table>
+
+    <p>Dimohon kepada orang tua/wali siswa untuk dapat hadir pada tanggal <span id="tanggalPanggilanDisplay"></span> ke sekolah untuk membicarakan hal tersebut di atas.</p>
+
+    <p>Demikian surat ini kami sampaikan, atas perhatian dan kerjasamanya kami ucapkan terima kasih.</p>
+
+    <div class="text-end mt-5">
+      <p>Hormat Kami,</p>
+      <p class="mb-1">Guru BK</p>
+      <div id="ttdArea" style="min-height: 100px;">
+        <img id="ttdImage" src="" style="max-height: 100px;" alt="">
+      </div>
+      <p class="mt-1" id="namaGuruBkDisplay"></p>
     </div>
+  </div>
+
+  <!-- Form Input -->
+  <div class="card my-4 no-print">
     <div class="card-body">
-      <form id="formSurat">
-        <div class="mb-3">
-          <label class="form-label">Nomor Surat</label>
-          <input type="text" class="form-control" id="nomorSurat" readonly>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Nama Siswa</label>
-          <select class="form-select" id="namaSiswa" required></select>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Kelas</label>
-          <input type="text" class="form-control" id="kelasSiswa" readonly>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Persoalan Pemanggilan</label>
-          <textarea class="form-control" id="masalah" required></textarea>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Tanggal Pemanggilan</label>
-          <input type="date" class="form-control" id="tanggal" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Panggilan Ke</label>
-          <select class="form-select" id="panggilanKe" required>
-            <option value="1">Panggilan Pertama</option>
-            <option value="2">Panggilan Kedua</option>
-            <option value="3">Panggilan Ketiga</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Nama Wali Kelas</label>
-          <input type="text" class="form-control" id="waliKelas" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Tanda Tangan Guru BK</label>
-          <input type="file" class="form-control" id="ttdGuru" accept="image/*">
-        </div>
-        <div class="d-flex justify-content-between mt-4">
-          <button type="button" class="btn btn-success" onclick="cetakSurat()">Cetak Surat</button>
-        </div>
-      </form>
+      <h5 class="card-title">Isi Form Surat</h5>
+      <div class="mb-3">
+        <label class="form-label">Nomor Surat</label>
+        <input type="text" id="nomorSurat" class="form-control" placeholder="contoh: 421.3/BK/VII/2025">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Nama Siswa</label>
+        <input type="text" id="namaSiswa" class="form-control" placeholder="contoh: Aditya Ramadhan">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Kelas</label>
+        <input type="text" id="kelasSiswa" class="form-control" placeholder="contoh: XII IPA 3">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Persoalan Pemanggilan</label>
+        <input type="text" id="persoalan" class="form-control" placeholder="contoh: Terlambat masuk kelas selama 1 minggu">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Tanggal Pemanggilan</label>
+        <input type="date" id="tanggalPanggilan" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Panggilan Ke-</label>
+        <select id="panggilanKe" class="form-select">
+          <option value="1">Panggilan Ke-1</option>
+          <option value="2">Panggilan Ke-2</option>
+          <option value="3">Panggilan Ke-3</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Nama Guru BK</label>
+        <input type="text" id="namaGuruBk" class="form-control" placeholder="contoh: Fery Simatupang, S.Pd">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Upload Tanda Tangan (gambar/QR)</label>
+        <input type="file" id="uploadTtd" class="form-control" accept="image/*">
+      </div>
+      <button class="btn btn-success" onclick="generateSurat()">Generate Surat</button>
     </div>
   </div>
 </div>
 
-<div id="previewSurat" class="a4 d-none">
-  <div class="kop-surat">
-    <img src="KOP SURAT SMAN 1 SUNGGAL FIX.jpg" alt="Kop Surat">
-  </div>
-  <div class="line"></div>
-  <p>Nomor: <span id="prevNomorSurat"></span></p>
-  <p>Kepada Yth. Orang Tua/Wali dari:</p>
-  <p>Nama: <strong id="prevNama"></strong></p>
-  <p>Kelas: <strong id="prevKelas"></strong></p>
-  <p>Di Tempat</p>
-  <br>
-  <p>Dengan hormat,</p>
-  <p>Sehubungan dengan <span id="prevMasalah"></span>, maka kami mengundang Bapak/Ibu untuk hadir pada:</p>
-  <ul>
-    <li>Tanggal: <strong id="prevTanggal"></strong></li>
-    <li>Panggilan: <strong id="prevKe"></strong></li>
-    <li>Tempat: SMAN 1 Sunggal</li>
-  </ul>
-  <p>Demikian pemberitahuan ini kami sampaikan. Atas perhatian dan kerja sama Bapak/Ibu kami ucapkan terima kasih.</p>
-  <br>
-  <div class="d-flex justify-content-between">
-    <div></div>
-    <div class="text-center">
-      <p>Guru BK</p>
-      <div id="ttdPreview"></div>
-      <p><span id="prevWali"></span></p>
-    </div>
-  </div>
-</div>
-
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-  // Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
     authDomain: "loginsmartschool-4f57d.firebaseapp.com",
     databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
     projectId: "loginsmartschool-4f57d",
-    storageBucket: "loginsmartschool-4f57d.appspot.com",
+    storageBucket: "loginsmartschool-4f57d.firebasestorage.app",
     messagingSenderId: "166215127727",
     appId: "1:166215127727:web:6888450f047c203871fa5a",
     measurementId: "G-8ZWH6QBTFV"
   };
   firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
+</script>
 
-  // Generate Nomor Surat
-  function generateNomorSurat() {
-    const tanggal = new Date();
-    const nomor = "BK/" + tanggal.getFullYear() + "/" + (tanggal.getMonth()+1).toString().padStart(2,'0') + "/" + Math.floor(Math.random()*1000);
-    document.getElementById('nomorSurat').value = nomor;
-  }
+<!-- Script Generate Surat -->
+<script>
+  function generateSurat() {
+    const nomorSurat = document.getElementById("nomorSurat").value;
+    const nama = document.getElementById("namaSiswa").value;
+    const kelas = document.getElementById("kelasSiswa").value;
+    const persoalan = document.getElementById("persoalan").value;
+    const tanggal = document.getElementById("tanggalPanggilan").value;
+    const panggilan = document.getElementById("panggilanKe").value;
+    const guruBk = document.getElementById("namaGuruBk").value;
 
-  // Ambil data siswaAsuh
-  function loadSiswaAsuh() {
-    const namaSiswa = document.getElementById('namaSiswa');
-    db.ref("siswaAsuh").once("value", snapshot => {
-      namaSiswa.innerHTML = "";
-      snapshot.forEach(child => {
-        const data = child.val();
-        const option = document.createElement("option");
-        option.value = data.nama;
-        option.text = data.nama;
-        option.setAttribute("data-kelas", data.kelas);
-        namaSiswa.appendChild(option);
-      });
-    });
-  }
+    document.getElementById("nomorSuratDisplay").innerText = nomorSurat;
+    document.getElementById("nomorSuratView").innerText = nomorSurat;
+    document.getElementById("namaSiswaDisplay").innerText = nama;
+    document.getElementById("kelasSiswaDisplay").innerText = kelas;
+    document.getElementById("persoalanDisplay").innerText = persoalan;
+    document.getElementById("tanggalPanggilanDisplay").innerText = tanggal;
+    document.getElementById("panggilanKeDisplay").innerText = panggilan;
+    document.getElementById("namaGuruBkDisplay").innerText = guruBk;
 
-  document.getElementById('namaSiswa').addEventListener('change', function () {
-    const kelas = this.options[this.selectedIndex].getAttribute('data-kelas');
-    document.getElementById('kelasSiswa').value = kelas;
-  });
-
-  // Preview dan Cetak Surat
-  function cetakSurat() {
-    document.getElementById("prevNomorSurat").innerText = document.getElementById("nomorSurat").value;
-    document.getElementById("prevNama").innerText = document.getElementById("namaSiswa").value;
-    document.getElementById("prevKelas").innerText = document.getElementById("kelasSiswa").value;
-    document.getElementById("prevMasalah").innerText = document.getElementById("masalah").value;
-    document.getElementById("prevTanggal").innerText = document.getElementById("tanggal").value;
-    document.getElementById("prevKe").innerText = document.getElementById("panggilanKe").selectedOptions[0].text;
-    document.getElementById("prevWali").innerText = document.getElementById("waliKelas").value;
-
-    const ttdInput = document.getElementById("ttdGuru").files[0];
-    const ttdPreview = document.getElementById("ttdPreview");
-
-    if (ttdInput) {
+    // Upload tanda tangan
+    const ttdFile = document.getElementById("uploadTtd").files[0];
+    if (ttdFile) {
       const reader = new FileReader();
       reader.onload = function (e) {
-        ttdPreview.innerHTML = `<img src="${e.target.result}" style="width:100px; height:auto;">`;
-        tampilkanDanCetak();
+        document.getElementById("ttdImage").src = e.target.result;
       };
-      reader.readAsDataURL(ttdInput);
+      reader.readAsDataURL(ttdFile);
     } else {
-      const qr = new QRious({ value: "Guru BK", size: 100 });
-      ttdPreview.innerHTML = `<img src="${qr.toDataURL()}">`;
-      tampilkanDanCetak();
+      document.getElementById("ttdImage").src = "";
     }
   }
-
-  function tampilkanDanCetak() {
-    document.querySelector(".card").classList.add("d-none");
-    const surat = document.getElementById("previewSurat");
-    surat.classList.remove("d-none");
-    window.print();
-    setTimeout(() => location.reload(), 2000);
-  }
-
-  // Init
-  generateNomorSurat();
-  loadSiswaAsuh();
 </script>
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </body>
 </html>
