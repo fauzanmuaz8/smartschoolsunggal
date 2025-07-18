@@ -50,8 +50,11 @@
 
 <div class="container">
   <div class="text-end my-3 no-print">
-    <button class="btn btn-primary" onclick="window.print()">
+    <button class="btn btn-primary me-2" onclick="window.print()">
       <i class="bi bi-printer"></i> Cetak Surat
+    </button>
+    <button class="btn btn-outline-success" onclick="downloadSurat()">
+      <i class="bi bi-download"></i> Download Surat
     </button>
   </div>
 
@@ -154,7 +157,7 @@
     authDomain: "loginsmartschool-4f57d.firebaseapp.com",
     databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
     projectId: "loginsmartschool-4f57d",
-    storageBucket: "loginsmartschool-4f57d.firebasestorage.app",
+    storageBucket: "loginsmartschool-4f57d.appspot.com",
     messagingSenderId: "166215127727",
     appId: "1:166215127727:web:6888450f047c203871fa5a",
     measurementId: "G-8ZWH6QBTFV"
@@ -162,7 +165,7 @@
   firebase.initializeApp(firebaseConfig);
 </script>
 
-<!-- Script Generate Surat -->
+<!-- Generate Surat -->
 <script>
   function generateSurat() {
     const nomorSurat = document.getElementById("nomorSurat").value;
@@ -182,7 +185,6 @@
     document.getElementById("panggilanKeDisplay").innerText = panggilan;
     document.getElementById("namaGuruBkDisplay").innerText = guruBk;
 
-    // Upload tanda tangan
     const ttdFile = document.getElementById("uploadTtd").files[0];
     if (ttdFile) {
       const reader = new FileReader();
@@ -193,6 +195,20 @@
     } else {
       document.getElementById("ttdImage").src = "";
     }
+  }
+</script>
+
+<!-- html2canvas + Download -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+  function downloadSurat() {
+    const surat = document.getElementById("surat");
+    html2canvas(surat, { scale: 2 }).then(canvas => {
+      const link = document.createElement("a");
+      link.download = "Surat_Panggilan.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
   }
 </script>
 
