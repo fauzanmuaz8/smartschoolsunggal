@@ -2,133 +2,152 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Surat Panggilan Orang Tua</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      background: linear-gradient(to bottom right, #0d47a1, #1976d2);
-      color: #000;
-      padding: 2rem;
-      animation: fadeIn 1s ease-in-out;
+      font-family: 'Times New Roman', serif;
+      background-color: #f2f9ff;
+      padding: 20px;
     }
-
-    .surat-container {
-      background: #fff;
-      padding: 4cm 3cm;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-      max-width: 800px;
+    .a4 {
+      width: 21cm;
+      min-height: 29.7cm;
       margin: auto;
-      font-size: 14pt;
+      background: white;
+      padding: 4cm 3cm;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
     }
-
-    .kop {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-
-    .kop img {
-      max-height: 120px;
-      margin-bottom: 10px;
-    }
-
-    .form-label {
-      font-weight: bold;
-    }
-
-    .form-control, .form-select {
-      margin-bottom: 1rem;
-    }
-
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-
     @media print {
-      body {
-        background: none;
+      body * {
+        visibility: hidden;
       }
-
-      .btn, .form-control, .form-select {
+      .a4, .a4 * {
+        visibility: visible;
+      }
+      .a4 {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+      }
+      .no-print {
         display: none;
       }
-
-      .surat-container {
-        padding: 0;
-        box-shadow: none;
-        border: none;
-        font-size: 12pt;
-      }
+    }
+    .kop-img {
+      width: 100%;
+      height: auto;
+      margin-bottom: 20px;
+    }
+    .form-label {
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-<div class="surat-container bg-white rounded-4">
-  <div class="kop">
-    <img src="KOP SURAT SMAN 1 SUNGGAL FIX.jpg" alt="Kop Surat" class="img-fluid">
-    <h5 class="fw-bold text-uppercase mt-2">SMAN 1 SUNGGAL</h5>
-    <hr>
+<div class="container">
+  <div class="text-end my-3 no-print">
+    <button class="btn btn-primary" onclick="window.print()">
+      <i class="bi bi-printer"></i> Cetak Surat
+    </button>
   </div>
 
-  <form id="suratForm">
-    <div class="mb-3">
-      <label class="form-label">Nomor Surat</label>
-      <input type="text" class="form-control" id="nomorSurat" required>
-    </div>
+  <div class="a4" id="surat">
+    <img src="KOP SURAT SMAN 1 SUNGGAL FIX.jpg" class="kop-img" alt="Kop Surat">
 
-    <div class="mb-3">
-      <label class="form-label">Nama Siswa</label>
-      <input type="text" class="form-control" id="namaSiswa" required>
-    </div>
+    <h5 class="text-center fw-bold text-decoration-underline">SURAT PANGGILAN ORANG TUA/WALI</h5>
+    <p class="text-center">Nomor: <span id="nomorSuratView"></span></p>
 
-    <div class="mb-3">
-      <label class="form-label">Kelas</label>
-      <input type="text" class="form-control" id="kelasSiswa" required>
-    </div>
+    <p>Dengan hormat,</p>
+    <p>Sehubungan dengan kondisi siswa berikut:</p>
+    <table class="table table-borderless w-75">
+      <tr>
+        <td>Nomor Surat</td>
+        <td>: <span id="nomorSuratDisplay"></span></td>
+      </tr>
+      <tr>
+        <td>Nama Siswa</td>
+        <td>: <span id="namaSiswaDisplay"></span></td>
+      </tr>
+      <tr>
+        <td>Kelas</td>
+        <td>: <span id="kelasSiswaDisplay"></span></td>
+      </tr>
+      <tr>
+        <td>Persoalan</td>
+        <td>: <span id="persoalanDisplay"></span></td>
+      </tr>
+      <tr>
+        <td>Panggilan ke</td>
+        <td>: <span id="panggilanKeDisplay"></span></td>
+      </tr>
+    </table>
 
-    <div class="mb-3">
-      <label class="form-label">Persoalan</label>
-      <textarea class="form-control" id="persoalan" rows="3" required></textarea>
-    </div>
+    <p>Dimohon kepada orang tua/wali siswa untuk dapat hadir pada tanggal <span id="tanggalPanggilanDisplay"></span> ke sekolah untuk membicarakan hal tersebut di atas.</p>
 
-    <div class="mb-3">
-      <label class="form-label">Tanggal Pemanggilan</label>
-      <input type="date" class="form-control" id="tanggalPanggil" required>
-    </div>
+    <p>Demikian surat ini kami sampaikan, atas perhatian dan kerjasamanya kami ucapkan terima kasih.</p>
 
-    <div class="mb-3">
-      <label class="form-label">Panggilan Ke-</label>
-      <select class="form-select" id="panggilanKe" required>
-        <option value="">-- Pilih --</option>
-        <option value="1">Panggilan ke-1</option>
-        <option value="2">Panggilan ke-2</option>
-        <option value="3">Panggilan ke-3</option>
-      </select>
+    <div class="text-end mt-5">
+      <p>Hormat Kami,</p>
+      <p class="mb-1">Guru BK</p>
+      <div id="ttdArea" style="min-height: 100px;">
+        <img id="ttdImage" src="" style="max-height: 100px;" alt="">
+      </div>
+      <p class="mt-1" id="namaGuruBkDisplay"></p>
     </div>
+  </div>
 
-    <div class="mb-3">
-      <label class="form-label">Nama Wali Kelas</label>
-      <input type="text" class="form-control" id="waliKelas" required>
+  <!-- Form Input -->
+  <div class="card my-4 no-print">
+    <div class="card-body">
+      <h5 class="card-title">Isi Form Surat</h5>
+      <div class="mb-3">
+        <label class="form-label">Nomor Surat</label>
+        <input type="text" id="nomorSurat" class="form-control" placeholder="contoh: 421.3/BK/VII/2025">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Nama Siswa</label>
+        <input type="text" id="namaSiswa" class="form-control" placeholder="contoh: Aditya Ramadhan">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Kelas</label>
+        <input type="text" id="kelasSiswa" class="form-control" placeholder="contoh: XII IPA 3">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Persoalan Pemanggilan</label>
+        <input type="text" id="persoalan" class="form-control" placeholder="contoh: Terlambat masuk kelas selama 1 minggu">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Tanggal Pemanggilan</label>
+        <input type="date" id="tanggalPanggilan" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Panggilan Ke-</label>
+        <select id="panggilanKe" class="form-select">
+          <option value="1">Panggilan Ke-1</option>
+          <option value="2">Panggilan Ke-2</option>
+          <option value="3">Panggilan Ke-3</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Nama Guru BK</label>
+        <input type="text" id="namaGuruBk" class="form-control" placeholder="contoh: Fery Simatupang, S.Pd">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Upload Tanda Tangan (gambar/QR)</label>
+        <input type="file" id="uploadTtd" class="form-control" accept="image/*">
+      </div>
+      <button class="btn btn-success" onclick="generateSurat()">Generate Surat</button>
     </div>
-
-    <div class="mb-3">
-      <label class="form-label">Tanda Tangan (QR/Gambar)</label>
-      <input type="file" class="form-control" id="ttdImage" accept="image/*">
-    </div>
-
-    <div class="d-flex justify-content-between">
-      <button type="submit" class="btn btn-primary">Simpan Surat</button>
-      <button type="button" class="btn btn-success" onclick="window.print()">Cetak Surat</button>
-    </div>
-  </form>
+  </div>
 </div>
 
 <!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
@@ -141,26 +160,43 @@
     measurementId: "G-8ZWH6QBTFV"
   };
   firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-
-  document.getElementById("suratForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    
-    const suratData = {
-      nomorSurat: document.getElementById("nomorSurat").value,
-      namaSiswa: document.getElementById("namaSiswa").value,
-      kelasSiswa: document.getElementById("kelasSiswa").value,
-      persoalan: document.getElementById("persoalan").value,
-      tanggalPanggil: document.getElementById("tanggalPanggil").value,
-      panggilanKe: document.getElementById("panggilanKe").value,
-      waliKelas: document.getElementById("waliKelas").value
-    };
-
-    db.ref("suratPanggilanOrtu").push(suratData)
-      .then(() => alert("Surat berhasil disimpan!"))
-      .catch(error => alert("Gagal menyimpan surat: " + error.message));
-  });
 </script>
 
+<!-- Script Generate Surat -->
+<script>
+  function generateSurat() {
+    const nomorSurat = document.getElementById("nomorSurat").value;
+    const nama = document.getElementById("namaSiswa").value;
+    const kelas = document.getElementById("kelasSiswa").value;
+    const persoalan = document.getElementById("persoalan").value;
+    const tanggal = document.getElementById("tanggalPanggilan").value;
+    const panggilan = document.getElementById("panggilanKe").value;
+    const guruBk = document.getElementById("namaGuruBk").value;
+
+    document.getElementById("nomorSuratDisplay").innerText = nomorSurat;
+    document.getElementById("nomorSuratView").innerText = nomorSurat;
+    document.getElementById("namaSiswaDisplay").innerText = nama;
+    document.getElementById("kelasSiswaDisplay").innerText = kelas;
+    document.getElementById("persoalanDisplay").innerText = persoalan;
+    document.getElementById("tanggalPanggilanDisplay").innerText = tanggal;
+    document.getElementById("panggilanKeDisplay").innerText = panggilan;
+    document.getElementById("namaGuruBkDisplay").innerText = guruBk;
+
+    // Upload tanda tangan
+    const ttdFile = document.getElementById("uploadTtd").files[0];
+    if (ttdFile) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        document.getElementById("ttdImage").src = e.target.result;
+      };
+      reader.readAsDataURL(ttdFile);
+    } else {
+      document.getElementById("ttdImage").src = "";
+    }
+  }
+</script>
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </body>
 </html>
