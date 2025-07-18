@@ -1,145 +1,156 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Jurnal BK - SMAN 1 Sunggal</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Form Surat Panggilan Orang Tua</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
   <style>
-    body {
-      background: linear-gradient(145deg, #0a2e59, #0f3d74);
-      min-height: 100vh;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
-      animation: fadeIn 1.2s ease;
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #surat-panggilan, #surat-panggilan * {
+        visibility: visible;
+      }
+      #surat-panggilan {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .card {
-      background: #143a5c;
-      border: none;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      animation: fadeIn 1.5s ease-in;
-    }
-    .form-control, .form-select {
-      border-radius: 12px;
-      border: none;
-      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .btn-primary {
-      background-color: #0d6efd;
-      border: none;
-      border-radius: 12px;
+    .kop-surat img {
+      width: 100%;
+      max-width: 100%;
+      margin-bottom: 20px;
     }
   </style>
 </head>
-<body>
-  <div class="container py-5">
-    <h2 class="text-center mb-4">📘 Jurnal Kegiatan BK</h2>
-    <div class="card p-4 mx-auto" style="max-width: 700px;">
-      <form id="jurnalForm">
-        <div class="mb-3">
-          <label for="kelas" class="form-label">Pilih Kelas</label>
-          <select class="form-select" id="kelas" required></select>
-        </div>
-        <div class="mb-3">
-          <label for="siswa" class="form-label">Nama Siswa</label>
-          <select class="form-select" id="siswa" required></select>
-        </div>
-        <div class="mb-3">
-          <label for="tanggal" class="form-label">Tanggal Kegiatan</label>
-          <input type="date" class="form-control" id="tanggal" required />
-        </div>
-        <div class="mb-3">
-          <label for="tempat" class="form-label">Tempat</label>
-          <input type="text" class="form-control" id="tempat" required />
-        </div>
-        <div class="mb-3">
-          <label for="keterangan" class="form-label">Keterangan Kegiatan</label>
-          <textarea class="form-control" id="keterangan" rows="3" placeholder="Contoh: Menangani siswa terlambat, memberikan arahan..." required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Simpan Kegiatan</button>
-      </form>
+<body class="container py-4">
+  <div class="kop-surat text-center">
+    <img src="KOP SURAT SMAN 1 SUNGGAL FIX.jpg" alt="Kop Surat SMAN 1 Sunggal">
+  </div>
+
+  <h3 class="text-center mb-4">Form Surat Panggilan Orang Tua</h3>
+
+  <form id="formSurat" class="border rounded p-4 shadow-sm">
+    <div class="mb-3">
+      <label for="namaSiswa" class="form-label">Nama Siswa</label>
+      <select id="namaSiswa" class="form-select" required></select>
+    </div>
+    <div class="mb-3">
+      <label for="kelasSiswa" class="form-label">Kelas</label>
+      <input type="text" id="kelasSiswa" class="form-control" readonly>
+    </div>
+    <div class="mb-3">
+      <label for="persoalan" class="form-label">Persoalan Pemanggilan</label>
+      <textarea id="persoalan" class="form-control" required></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="tanggal" class="form-label">Tanggal Pemanggilan</label>
+      <input type="date" id="tanggal" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="panggilanKe" class="form-label">Panggilan Ke-</label>
+      <select id="panggilanKe" class="form-select" required>
+        <option value="">Pilih</option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="waliKelas" class="form-label">Nama Wali Kelas</label>
+      <input type="text" id="waliKelas" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label for="ttdGuruBK" class="form-label">Tanda Tangan Guru BK</label>
+      <input type="text" id="ttdGuruBK" class="form-control" placeholder="Nama Guru BK" required>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="cetakSurat()">Cetak Surat</button>
+  </form>
+
+  <div id="surat-panggilan" class="mt-5 p-4" style="display: none; font-family: Times New Roman;">
+    <div class="text-center">
+      <img src="KOP SURAT SMAN 1 SUNGGAL FIX.jpg" style="width: 100%;">
+      <hr style="border: 1px solid black;">
+      <h5><u>SURAT PEMANGGILAN ORANG TUA</u></h5>
+      <p>No: ........ /SMAN1/SUNGGAL/.......</p>
+    </div>
+    <p>Kepada Yth.<br>
+      Orang Tua/Wali dari siswa atas nama <b id="sNama"></b>, kelas <b id="sKelas"></b>.<br>
+      Di Tempat.</p>
+
+    <p>Dengan hormat,</p>
+    <p>Bersama ini kami memanggil orang tua dari siswa tersebut di atas untuk hadir ke sekolah pada:</p>
+    <ul>
+      <li><b>Tanggal:</b> <span id="sTanggal"></span></li>
+      <li><b>Panggilan ke:</b> <span id="sPanggilan"></span></li>
+    </ul>
+    <p>Sehubungan dengan: <span id="sPersoalan"></span></p>
+    <p>Demi kelancaran proses pembinaan, kami sangat mengharapkan kehadiran Bapak/Ibu tepat waktu.</p>
+
+    <br><br>
+    <div style="text-align: right;">
+      Hormat kami,<br>
+      Guru BK<br><br><br>
+      <b><u><span id="sGuruBK"></span></u></b>
+    </div>
+    <div style="margin-top: 40px;">
+      Tembusan:<br>
+      1. Wali Kelas: <span id="sWaliKelas"></span><br>
+      2. Arsip
     </div>
   </div>
 
   <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
-      authDomain: "loginsmartschool-4f57d.firebaseapp.com",
-      databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
-      projectId: "loginsmartschool-4f57d",
-      storageBucket: "loginsmartschool-4f57d.firebasestorage.app",
-      messagingSenderId: "166215127727",
-      appId: "1:166215127727:web:6888450f047c203871fa5a",
-      measurementId: "G-8ZWH6QBTFV"
-    };
+  apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
+  authDomain: "loginsmartschool-4f57d.firebaseapp.com",
+  databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
+  projectId: "loginsmartschool-4f57d",
+  storageBucket: "loginsmartschool-4f57d.firebasestorage.app",
+  messagingSenderId: "166215127727",
+  appId: "1:166215127727:web:6888450f047c203871fa5a",
+  measurementId: "G-8ZWH6QBTFV"
+};
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const kelasSelect = document.getElementById('kelas');
-    const siswaSelect = document.getElementById('siswa');
+    const namaSiswaEl = document.getElementById('namaSiswa');
+    const kelasSiswaEl = document.getElementById('kelasSiswa');
 
-    const guruLogin = localStorage.getItem("namaGuruBK") || prompt("Masukkan nama login guru BK:").toLowerCase();
-    localStorage.setItem("namaGuruBK", guruLogin);
-
-    let dataSiswa = [];
-
-    db.ref("siswaAsuh").on("value", snapshot => {
-      dataSiswa = [];
-      kelasSelect.innerHTML = `<option value="">Pilih Kelas</option>`;
-      const kelasSet = new Set();
-
-      snapshot.forEach(item => {
-        const data = item.val();
-        if (data.guru === guruLogin) {
-          dataSiswa.push(data);
-          kelasSet.add(data.kelas);
-        }
-      });
-
-      kelasSet.forEach(kelas => {
-        const opt = document.createElement("option");
-        opt.value = kelas;
-        opt.textContent = kelas;
-        kelasSelect.appendChild(opt);
+    // Ambil data siswa dari Firebase
+    firebase.database().ref("siswaasuh").on("value", (snapshot) => {
+      namaSiswaEl.innerHTML = '<option value="">Pilih Nama</option>';
+      snapshot.forEach((child) => {
+        const data = child.val();
+        const option = document.createElement('option');
+        option.value = data.nama;
+        option.textContent = data.nama;
+        option.dataset.kelas = data.kelas;
+        namaSiswaEl.appendChild(option);
       });
     });
 
-    kelasSelect.addEventListener("change", () => {
-      const selectedKelas = kelasSelect.value;
-      siswaSelect.innerHTML = `<option value="">Pilih Siswa</option>`;
-      dataSiswa.filter(s => s.kelas === selectedKelas).forEach(s => {
-        const opt = document.createElement("option");
-        opt.value = s.nama;
-        opt.textContent = s.nama;
-        siswaSelect.appendChild(opt);
-      });
+    namaSiswaEl.addEventListener("change", function () {
+      const selected = namaSiswaEl.selectedOptions[0];
+      kelasSiswaEl.value = selected.dataset.kelas || '';
     });
 
-    document.getElementById("jurnalForm").addEventListener("submit", e => {
-      e.preventDefault();
-
-      const data = {
-        kelas: kelasSelect.value,
-        siswa: siswaSelect.value,
-        tanggal: document.getElementById("tanggal").value,
-        tempat: document.getElementById("tempat").value,
-        keterangan: document.getElementById("keterangan").value,
-        guru: guruLogin
-      };
-
-      const newRef = db.ref("jurnalBK").push();
-      newRef.set(data).then(() => {
-        alert("Kegiatan berhasil disimpan!");
-        document.getElementById("jurnalForm").reset();
-      });
-    });
+    function cetakSurat() {
+      document.getElementById('sNama').textContent = document.getElementById('namaSiswa').value;
+      document.getElementById('sKelas').textContent = document.getElementById('kelasSiswa').value;
+      document.getElementById('sTanggal').textContent = document.getElementById('tanggal').value;
+      document.getElementById('sPanggilan').textContent = document.getElementById('panggilanKe').value;
+      document.getElementById('sPersoalan').textContent = document.getElementById('persoalan').value;
+      document.getElementById('sGuruBK').textContent = document.getElementById('ttdGuruBK').value;
+      document.getElementById('sWaliKelas').textContent = document.getElementById('waliKelas').value;
+      
+      document.getElementById('surat-panggilan').style.display = 'block';
+      window.print();
+    }
   </script>
 </body>
 </html>
