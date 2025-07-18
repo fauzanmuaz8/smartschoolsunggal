@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jurnal BK</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #001f3f, #004080);
+      color: white;
+      min-height: 100vh;
+      padding-top: 30px;
+    }
+    .card {
+      background: #002b5c;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    }
+    label, option, select, input, textarea {
+      color: #000 !important;
+    }
+    .form-control::placeholder {
+      color: #6c757d;
+    }
+    .btn-primary {
+      background-color: #0056b3;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="text-center mb-4">
+      <h2>📘 Jurnal Bimbingan Konseling</h2>
+      <p class="text-light">Catat kegiatan harian terkait siswa asuh</p>
+    </div>
+    <div class="card p-4">
+      <form id="jurnalForm">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label for="siswa" class="form-label text-white">Nama Siswa</label>
+            <select id="siswa" class="form-select" required></select>
+          </div>
+          <div class="col-md-4">
+            <label for="kelas" class="form-label text-white">Kelas</label>
+            <select id="kelas" class="form-select" required></select>
+          </div>
+          <div class="col-md-4">
+            <label for="pengampu" class="form-label text-white">Guru Pengampu</label>
+            <select id="pengampu" class="form-select" required></select>
+          </div>
+          <div class="col-md-4">
+            <label for="tanggal" class="form-label text-white">Tanggal</label>
+            <input type="date" id="tanggal" class="form-control" required>
+          </div>
+          <div class="col-md-4">
+            <label for="tempat" class="form-label text-white">Tempat Kegiatan</label>
+            <input type="text" id="tempat" class="form-control" placeholder="Ruang BK / Lapangan" required>
+          </div>
+          <div class="col-md-12">
+            <label for="kegiatan" class="form-label text-white">Keterangan Kegiatan</label>
+            <textarea id="kegiatan" class="form-control" rows="3" placeholder="Contoh: Membimbing siswa yang terlambat masuk sekolah" required></textarea>
+          </div>
+        </div>
+        <div class="mt-4 text-end">
+          <button type="submit" class="btn btn-primary">Simpan Jurnal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
+      authDomain: "loginsmartschool-4f57d.firebaseapp.com",
+      databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
+      projectId: "loginsmartschool-4f57d",
+      storageBucket: "loginsmartschool-4f57d.appspot.com",
+      messagingSenderId: "166215127727",
+      appId: "1:166215127727:web:6888450f047c203871fa5a",
+      measurementId: "G-8ZWH6QBTFV"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const siswaDropdown = document.getElementById("siswa");
+    const kelasDropdown = document.getElementById("kelas");
+    const pengampuDropdown = document.getElementById("pengampu");
+
+    function loadSiswaAsuh() {
+      db.ref("siswa_asuh").once("value", snapshot => {
+        const data = snapshot.val();
+        const siswaSet = new Set();
+        const kelasSet = new Set();
+        const guruSet = new Set();
+
+        for (let id in data) {
+          const item = data[id];
+          siswaSet.add(item.nama);
+          kelasSet.add(item.kelas);
+          guruSet.add(item.guru);
+        }
+
+        siswaSet.forEach(nama => {
+          const opt = document.createElement("option");
+          opt.text = nama;
+          siswaDropdown.add(opt);
+        });
+
+        kelasSet.forEach(kelas => {
+          const opt = document.createElement("option");
+          opt.text = kelas;
+          kelasDropdown.add(opt);
+        });
+
+        guruSet.forEach(guru => {
+          const opt = document.createElement("option");
+          opt.text = guru;
+          pengampuDropdown.add(opt);
+        });
+      });
+    }
+
+    loadSiswaAsuh();
+
+    document.getElementById("jurnalForm").addEventListener("submit", e => {
+      e.preventDefault();
+
+      const jurnal = {
+        nama: siswaDropdown.value,
+        kelas: kelasDropdown.value,
+        guru: pengampuDropdown.value,
+        tanggal: document.getElementById("tanggal").value,
+        tempat: document.getElementById("tempat").value,
+        kegiatan: document.getElementById("kegiatan").value
+      };
+
+      const newKey = db.ref().child("jurnal_bk").push().key;
+      db.ref("jurnal_bk/" + newKey).set(jurnal)
+        .then(() => {
+          alert("Jurnal berhasil disimpan.");
+          document.getElementById("jurnalForm").reset();
+        })
+        .catch(error => {
+          alert("Gagal menyimpan jurnal: " + error);
+        });
+    });
+  </script>
+</body>
+</html>
