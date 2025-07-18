@@ -2,150 +2,217 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Surat Panggilan Orang Tua - SMAN 1 Sunggal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap -->
+  <title>Surat Panggilan Orang Tua - BK</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Firebase -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
 
   <style>
     @media print {
       body {
-        margin: 4cm 3cm;
-        font-size: 12pt;
-      }
-      .no-print {
-        display: none;
+        margin: 4cm 3cm 4cm 3cm;
       }
     }
-
-    body {
-      background-color: #f0f8ff;
-      font-family: 'Segoe UI', sans-serif;
+    .a4 {
+      width: 21cm;
+      min-height: 29.7cm;
+      padding: 2rem;
+      background: white;
+      margin: auto;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+      font-size: 14px;
+      color: #000;
+      font-family: 'Times New Roman', serif;
     }
-
+    .kop-surat {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
     .kop-surat img {
-      width: 100%;
+      max-width: 100%;
       height: auto;
     }
-
-    .surat-container {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    .line {
+      border-bottom: 2px solid black;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
     }
-
-    .form-label {
-      font-weight: 600;
-      color: #003366;
+    .animate-fade {
+      animation: fadeIn 1s ease-in-out;
     }
-
-    .btn-primary {
-      background-color: #003366;
-      border: none;
-    }
-
-    .btn-primary:hover {
-      background-color: #002244;
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
     }
   </style>
 </head>
-<body>
+<body class="bg-light">
 
-<div class="container my-5 surat-container">
-  <div class="kop-surat text-center mb-4">
-    <img src="KOP SURAT SMAN 1 SUNGGAL FIX.jpg" alt="Kop Surat SMAN 1 Sunggal">
+<div class="container py-4">
+  <div class="card shadow animate-fade">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">Form Surat Panggilan Orang Tua</h4>
+    </div>
+    <div class="card-body">
+      <form id="formSurat">
+        <div class="mb-3">
+          <label class="form-label">Nomor Surat</label>
+          <input type="text" class="form-control" id="nomorSurat" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Nama Siswa</label>
+          <select class="form-select" id="namaSiswa" required></select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Kelas</label>
+          <input type="text" class="form-control" id="kelasSiswa" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Persoalan Pemanggilan</label>
+          <textarea class="form-control" id="masalah" required></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Tanggal Pemanggilan</label>
+          <input type="date" class="form-control" id="tanggal" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Panggilan Ke</label>
+          <select class="form-select" id="panggilanKe" required>
+            <option value="1">Panggilan Pertama</option>
+            <option value="2">Panggilan Kedua</option>
+            <option value="3">Panggilan Ketiga</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Nama Wali Kelas</label>
+          <input type="text" class="form-control" id="waliKelas" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Tanda Tangan Guru BK</label>
+          <input type="file" class="form-control" id="ttdGuru" accept="image/*">
+        </div>
+        <div class="d-flex justify-content-between mt-4">
+          <button type="button" class="btn btn-success" onclick="cetakSurat()">Cetak Surat</button>
+        </div>
+      </form>
+    </div>
   </div>
+</div>
 
-  <form id="formSurat">
-    <div class="mb-3">
-      <label class="form-label">Nomor Surat</label>
-      <input type="text" class="form-control" id="nomorSurat" required>
+<div id="previewSurat" class="a4 d-none">
+  <div class="kop-surat">
+    <img src="KOP SURAT SMAN 1 SUNGGAL FIX.jpg" alt="Kop Surat">
+  </div>
+  <div class="line"></div>
+  <p>Nomor: <span id="prevNomorSurat"></span></p>
+  <p>Kepada Yth. Orang Tua/Wali dari:</p>
+  <p>Nama: <strong id="prevNama"></strong></p>
+  <p>Kelas: <strong id="prevKelas"></strong></p>
+  <p>Di Tempat</p>
+  <br>
+  <p>Dengan hormat,</p>
+  <p>Sehubungan dengan <span id="prevMasalah"></span>, maka kami mengundang Bapak/Ibu untuk hadir pada:</p>
+  <ul>
+    <li>Tanggal: <strong id="prevTanggal"></strong></li>
+    <li>Panggilan: <strong id="prevKe"></strong></li>
+    <li>Tempat: SMAN 1 Sunggal</li>
+  </ul>
+  <p>Demikian pemberitahuan ini kami sampaikan. Atas perhatian dan kerja sama Bapak/Ibu kami ucapkan terima kasih.</p>
+  <br>
+  <div class="d-flex justify-content-between">
+    <div></div>
+    <div class="text-center">
+      <p>Guru BK</p>
+      <div id="ttdPreview"></div>
+      <p><span id="prevWali"></span></p>
     </div>
-    <div class="mb-3">
-      <label class="form-label">Nama Siswa</label>
-      <input type="text" class="form-control" id="namaSiswa" required>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Kelas</label>
-      <input type="text" class="form-control" id="kelasSiswa" required>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Persoalan Pemanggilan</label>
-      <textarea class="form-control" id="persoalan" rows="3" required></textarea>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Tanggal Pemanggilan</label>
-      <input type="date" class="form-control" id="tanggalPanggilan" required>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Panggilan ke-</label>
-      <select class="form-select" id="panggilanKe" required>
-        <option value="">Pilih</option>
-        <option value="1">Pertama</option>
-        <option value="2">Kedua</option>
-        <option value="3">Ketiga</option>
-      </select>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Nama Wali Kelas</label>
-      <input type="text" class="form-control" id="waliKelas" required>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Tanda Tangan Guru BK</label>
-      <input type="text" class="form-control" id="ttdGuruBk" placeholder="Nama Guru BK" required>
-    </div>
-    <div class="text-end no-print">
-      <button type="button" onclick="simpanSurat()" class="btn btn-primary">Simpan & Cetak</button>
-    </div>
-  </form>
+  </div>
 </div>
 
 <script>
-  // Konfigurasi Firebase
+  // Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
     authDomain: "loginsmartschool-4f57d.firebaseapp.com",
     databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
     projectId: "loginsmartschool-4f57d",
-    storageBucket: "loginsmartschool-4f57d.firebasestorage.app",
+    storageBucket: "loginsmartschool-4f57d.appspot.com",
     messagingSenderId: "166215127727",
     appId: "1:166215127727:web:6888450f047c203871fa5a",
     measurementId: "G-8ZWH6QBTFV"
   };
-
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  function simpanSurat() {
-    const data = {
-      nomorSurat: document.getElementById('nomorSurat').value,
-      nama: document.getElementById('namaSiswa').value,
-      kelas: document.getElementById('kelasSiswa').value,
-      persoalan: document.getElementById('persoalan').value,
-      tanggal: document.getElementById('tanggalPanggilan').value,
-      panggilanKe: document.getElementById('panggilanKe').value,
-      waliKelas: document.getElementById('waliKelas').value,
-      guruBK: document.getElementById('ttdGuruBk').value
-    };
+  // Generate Nomor Surat
+  function generateNomorSurat() {
+    const tanggal = new Date();
+    const nomor = "BK/" + tanggal.getFullYear() + "/" + (tanggal.getMonth()+1).toString().padStart(2,'0') + "/" + Math.floor(Math.random()*1000);
+    document.getElementById('nomorSurat').value = nomor;
+  }
 
-    if (data.nama && data.kelas && data.persoalan) {
-      const suratRef = db.ref("suratPanggilan").push();
-      suratRef.set(data, function(error) {
-        if (!error) {
-          window.print(); // Cetak otomatis setelah simpan
-        } else {
-          alert("Gagal menyimpan data");
-        }
+  // Ambil data siswaAsuh
+  function loadSiswaAsuh() {
+    const namaSiswa = document.getElementById('namaSiswa');
+    db.ref("siswaAsuh").once("value", snapshot => {
+      namaSiswa.innerHTML = "";
+      snapshot.forEach(child => {
+        const data = child.val();
+        const option = document.createElement("option");
+        option.value = data.nama;
+        option.text = data.nama;
+        option.setAttribute("data-kelas", data.kelas);
+        namaSiswa.appendChild(option);
       });
+    });
+  }
+
+  document.getElementById('namaSiswa').addEventListener('change', function () {
+    const kelas = this.options[this.selectedIndex].getAttribute('data-kelas');
+    document.getElementById('kelasSiswa').value = kelas;
+  });
+
+  // Preview dan Cetak Surat
+  function cetakSurat() {
+    document.getElementById("prevNomorSurat").innerText = document.getElementById("nomorSurat").value;
+    document.getElementById("prevNama").innerText = document.getElementById("namaSiswa").value;
+    document.getElementById("prevKelas").innerText = document.getElementById("kelasSiswa").value;
+    document.getElementById("prevMasalah").innerText = document.getElementById("masalah").value;
+    document.getElementById("prevTanggal").innerText = document.getElementById("tanggal").value;
+    document.getElementById("prevKe").innerText = document.getElementById("panggilanKe").selectedOptions[0].text;
+    document.getElementById("prevWali").innerText = document.getElementById("waliKelas").value;
+
+    const ttdInput = document.getElementById("ttdGuru").files[0];
+    const ttdPreview = document.getElementById("ttdPreview");
+
+    if (ttdInput) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        ttdPreview.innerHTML = `<img src="${e.target.result}" style="width:100px; height:auto;">`;
+        tampilkanDanCetak();
+      };
+      reader.readAsDataURL(ttdInput);
     } else {
-      alert("Mohon lengkapi semua data.");
+      const qr = new QRious({ value: "Guru BK", size: 100 });
+      ttdPreview.innerHTML = `<img src="${qr.toDataURL()}">`;
+      tampilkanDanCetak();
     }
   }
-</script>
 
+  function tampilkanDanCetak() {
+    document.querySelector(".card").classList.add("d-none");
+    const surat = document.getElementById("previewSurat");
+    surat.classList.remove("d-none");
+    window.print();
+    setTimeout(() => location.reload(), 2000);
+  }
+
+  // Init
+  generateNomorSurat();
+  loadSiswaAsuh();
+</script>
 </body>
 </html>
