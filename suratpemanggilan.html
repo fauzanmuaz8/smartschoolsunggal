@@ -28,6 +28,7 @@
   </style>
 </head>
 <body class="container py-4">
+
   <div class="kop-surat text-center">
     <img src="KOP SURAT SMAN 1 SUNGGAL FIX.jpg" alt="Kop Surat SMAN 1 Sunggal">
   </div>
@@ -106,31 +107,36 @@
 
   <script>
     const firebaseConfig = {
-  apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
-  authDomain: "loginsmartschool-4f57d.firebaseapp.com",
-  databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
-  projectId: "loginsmartschool-4f57d",
-  storageBucket: "loginsmartschool-4f57d.firebasestorage.app",
-  messagingSenderId: "166215127727",
-  appId: "1:166215127727:web:6888450f047c203871fa5a",
-  measurementId: "G-8ZWH6QBTFV"
-};
+      apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
+      authDomain: "loginsmartschool-4f57d.firebaseapp.com",
+      databaseURL: "https://loginsmartschool-4f57d-default-rtdb.firebaseio.com",
+      projectId: "loginsmartschool-4f57d",
+      storageBucket: "loginsmartschool-4f57d.appspot.com",
+      messagingSenderId: "166215127727",
+      appId: "1:166215127727:web:6888450f047c203871fa5a",
+      measurementId: "G-8ZWH6QBTFV"
+    };
+
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     const namaSiswaEl = document.getElementById('namaSiswa');
     const kelasSiswaEl = document.getElementById('kelasSiswa');
 
-    // Ambil data siswa dari Firebase
-    firebase.database().ref("siswaasuh").on("value", (snapshot) => {
+    const guruBKLogin = localStorage.getItem("namaGuruBK") || prompt("Masukkan nama guru BK yang login:");
+    localStorage.setItem("namaGuruBK", guruBKLogin.toLowerCase());
+
+    firebase.database().ref("siswaAsuh").on("value", (snapshot) => {
       namaSiswaEl.innerHTML = '<option value="">Pilih Nama</option>';
       snapshot.forEach((child) => {
         const data = child.val();
-        const option = document.createElement('option');
-        option.value = data.nama;
-        option.textContent = data.nama;
-        option.dataset.kelas = data.kelas;
-        namaSiswaEl.appendChild(option);
+        if (data.guru && data.guru.toLowerCase() === guruBKLogin.toLowerCase()) {
+          const option = document.createElement('option');
+          option.value = data.nama;
+          option.textContent = data.nama;
+          option.dataset.kelas = data.kelas;
+          namaSiswaEl.appendChild(option);
+        }
       });
     });
 
@@ -147,7 +153,7 @@
       document.getElementById('sPersoalan').textContent = document.getElementById('persoalan').value;
       document.getElementById('sGuruBK').textContent = document.getElementById('ttdGuruBK').value;
       document.getElementById('sWaliKelas').textContent = document.getElementById('waliKelas').value;
-      
+
       document.getElementById('surat-panggilan').style.display = 'block';
       window.print();
     }
