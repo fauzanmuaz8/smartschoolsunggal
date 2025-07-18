@@ -3,70 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <title>Daftar Siswa Asuh BK</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap 5 CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <!-- SheetJS -->
-  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap + Animate CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
   <style>
     body {
-      background: #e3f2fd;
+      background: linear-gradient(to bottom, #001f3f, #003366);
+      color: white;
+      min-height: 100vh;
     }
     .card {
-      border-radius: 16px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      background-color: rgba(255, 255, 255, 0.1);
+      border: none;
+      backdrop-filter: blur(8px);
     }
-    .btn-custom {
-      background-color: #1976d2;
+    table, th, td {
       color: white;
     }
-    .btn-custom:hover {
-      background-color: #0d47a1;
+    .form-control, .btn {
+      border-radius: 10px;
+    }
+    .btn-kode {
+      margin-top: 5px;
     }
   </style>
 </head>
-<body>
-  <div class="container py-5">
-    <h3 class="text-center mb-4 text-primary">Daftar Siswa Asuh BK</h3>
+<body class="p-3 animate__animated animate__fadeIn">
 
-    <div class="card p-4">
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label for="kelasDropdown" class="form-label">Pilih Kelas:</label>
-          <select id="kelasDropdown" class="form-select"></select>
+  <div class="container">
+    <h3 class="text-center mb-4">Daftar Siswa Asuh BK</h3>
+
+    <div class="card p-3 mb-3">
+      <div class="row g-2">
+        <div class="col-md-4">
+          <select id="kelasFilter" class="form-control">
+            <option value="">-- Pilih Kelas --</option>
+          </select>
         </div>
-        <div class="col-md-6 d-flex align-items-end justify-content-end">
-          <button class="btn btn-success me-2" onclick="document.getElementById('excelInput').click()"><i class="bi bi-upload"></i> Import Siswa</button>
-          <input type="file" id="excelInput" class="d-none" accept=".xlsx,.xls" onchange="importExcel(event)">
-          <button class="btn btn-info me-2" onclick="downloadTemplate()"><i class="bi bi-file-earmark-arrow-down"></i> Download Format</button>
-          <button class="btn btn-warning" onclick="tambahKelas()"><i class="bi bi-plus-circle"></i> Tambah Kelas</button>
+        <div class="col-md-4">
+          <input type="file" id="excelFile" accept=".xlsx" class="form-control">
+        </div>
+        <div class="col-md-4 d-grid">
+          <button class="btn btn-success" onclick="importExcel()">Import Siswa</button>
+        </div>
+        <div class="col-md-6 mt-2">
+          <button class="btn btn-warning" onclick="downloadFormat()">Download Format Excel</button>
+        </div>
+        <div class="col-md-6 mt-2">
+          <input type="password" class="form-control" id="kodeAkses" placeholder="Masukkan kode akses">
+        </div>
+        <div class="col-md-6 mt-2 d-grid">
+          <button class="btn btn-danger" onclick="hapusSiswa()">Hapus Siswa</button>
+        </div>
+        <div class="col-md-6 mt-2 d-grid">
+          <button class="btn btn-danger" onclick="hapusKelas()">Hapus Kelas</button>
         </div>
       </div>
-
-      <div id="daftarSiswa" class="table-responsive">
-        <table class="table table-bordered table-striped">
-          <thead class="table-primary">
-            <tr>
-              <th>No</th>
-              <th>Nama Siswa</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="siswaTable"></tbody>
-        </table>
-      </div>
-
-      <button class="btn btn-danger mt-3" onclick="hapusData()"><i class="bi bi-trash"></i> Hapus Data (Kelas/Siswa)</button>
     </div>
+
+    <table class="table table-bordered table-striped mt-3">
+      <thead>
+        <tr>
+          <th>Nama Siswa</th>
+          <th>Kelas</th>
+        </tr>
+      </thead>
+      <tbody id="dataTabel"></tbody>
+    </table>
   </div>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, onValue, set, update, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
       authDomain: "loginsmartschool-4f57d.firebaseapp.com",
@@ -76,114 +86,113 @@
       messagingSenderId: "166215127727",
       appId: "1:166215127727:web:6888450f047c203871fa5a"
     };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase();
+    const guruLogin = localStorage.getItem("guru") || "fery"; // default fery jika belum login
+    const kelasDropdown = document.getElementById("kelasFilter");
+    const tabelBody = document.getElementById("dataTabel");
 
-    let userBK = localStorage.getItem('namaGuruBK') || prompt("Masukkan nama Anda (fery/natalina/petrus/rahmat muliadi/novi/rina):").toLowerCase();
-    localStorage.setItem('namaGuruBK', userBK);
-
-    const kelasDropdown = document.getElementById('kelasDropdown');
-    const siswaTable = document.getElementById('siswaTable');
+    function tampilkanData(kelas) {
+      tabelBody.innerHTML = "";
+      db.ref("siswa_asuh").orderByChild("guru").equalTo(guruLogin).once("value", snapshot => {
+        snapshot.forEach(child => {
+          const data = child.val();
+          if (!kelas || data.kelas === kelas) {
+            const row = `<tr><td>${data.nama}</td><td>${data.kelas}</td></tr>`;
+            tabelBody.innerHTML += row;
+          }
+        });
+      });
+    }
 
     function loadKelas() {
-      const kelasRef = ref(db, `siswaAsuh/${userBK}`);
-      onValue(kelasRef, (snapshot) => {
-        kelasDropdown.innerHTML = "";
-        snapshot.forEach(kelas => {
+      kelasDropdown.innerHTML = `<option value="">-- Semua Kelas --</option>`;
+      const kelasSet = new Set();
+      db.ref("siswa_asuh").orderByChild("guru").equalTo(guruLogin).once("value", snapshot => {
+        snapshot.forEach(child => {
+          kelasSet.add(child.val().kelas);
+        });
+        kelasSet.forEach(kls => {
           const opt = document.createElement("option");
-          opt.value = kelas.key;
-          opt.textContent = kelas.key;
+          opt.value = kls;
+          opt.textContent = kls;
           kelasDropdown.appendChild(opt);
         });
-        if (kelasDropdown.value) loadSiswa(kelasDropdown.value);
       });
     }
 
-    kelasDropdown.addEventListener("change", () => {
-      loadSiswa(kelasDropdown.value);
-    });
+    kelasDropdown.addEventListener("change", e => tampilkanData(e.target.value));
+    window.onload = () => {
+      loadKelas();
+      tampilkanData();
+    };
 
-    function loadSiswa(kelas) {
-      const siswaRef = ref(db, `siswaAsuh/${userBK}/${kelas}`);
-      onValue(siswaRef, (snapshot) => {
-        siswaTable.innerHTML = "";
-        let no = 1;
-        snapshot.forEach(child => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${no++}</td>
-            <td>${child.val()}</td>
-            <td><button class="btn btn-sm btn-danger" onclick="hapusSiswa('${kelas}', '${child.key}')">Hapus</button></td>
-          `;
-          siswaTable.appendChild(tr);
-        });
-      });
-    }
-
-    window.importExcel = (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+    function importExcel() {
+      const file = document.getElementById("excelFile").files[0];
+      if (!file) return alert("Pilih file Excel dahulu");
       const reader = new FileReader();
-      reader.onload = function(event) {
-        const workbook = XLSX.read(event.target.result, { type: 'binary' });
+      reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const data = XLSX.utils.sheet_to_json(sheet);
-        data.forEach(siswa => {
-          const nama = siswa.Nama;
-          const kelas = siswa.Kelas;
-          const newRef = ref(db, `siswaAsuh/${userBK}/${kelas}/${Date.now()}`);
-          set(newRef, nama);
+        const rows = XLSX.utils.sheet_to_json(sheet);
+        rows.forEach(row => {
+          if (row["Nama Siswa"] && row["Kelas"]) {
+            const newRef = db.ref("siswa_asuh").push();
+            newRef.set({
+              nama: row["Nama Siswa"],
+              kelas: row["Kelas"],
+              guru: guruLogin
+            });
+          }
         });
-        alert("Import berhasil!");
-        loadKelas();
+        alert("Data berhasil diimpor.");
+        setTimeout(() => window.location.reload(), 1000);
       };
-      reader.readAsBinaryString(file);
-    };
+      reader.readAsArrayBuffer(file);
+    }
 
-    window.downloadTemplate = () => {
+    function downloadFormat() {
+      const ws = XLSX.utils.json_to_sheet([
+        { "Nama Siswa": "Contoh Nama", "Kelas": "X-1", "Guru Pengampu": guruLogin }
+      ]);
       const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet([{ Nama: "Contoh Nama", Kelas: "X-IPA1" }]);
-      XLSX.utils.book_append_sheet(wb, ws, "Format");
-      XLSX.writeFile(wb, "Format_Import_Siswa.xlsx");
-    };
+      XLSX.utils.book_append_sheet(wb, ws, "Format Siswa");
+      XLSX.writeFile(wb, "Format_Siswa_Asuh.xlsx");
+    }
 
-    window.tambahKelas = () => {
-      const kode = prompt("Masukkan kode akses:");
-      if (kode === "5UGJV99QQT") {
-        const namaKelas = prompt("Masukkan nama kelas:");
-        if (namaKelas) {
-          const refKelas = ref(db, `siswaAsuh/${userBK}/${namaKelas}`);
-          set(refKelas, { dummy: "hapus" });
-          alert("Kelas berhasil ditambahkan!");
-        }
-      } else {
-        alert("Kode salah.");
-      }
-    };
+    function hapusSiswa() {
+      const kode = document.getElementById("kodeAkses").value;
+      if (kode !== "5UGJV99QQT") return alert("Kode salah");
+      const kelas = kelasDropdown.value;
+      if (!kelas) return alert("Pilih kelas terlebih dahulu");
+      db.ref("siswa_asuh").orderByChild("guru").equalTo(guruLogin).once("value", snapshot => {
+        snapshot.forEach(child => {
+          if (child.val().kelas === kelas) {
+            db.ref("siswa_asuh/" + child.key).remove();
+          }
+        });
+        alert("Siswa berhasil dihapus dari kelas " + kelas);
+        setTimeout(() => window.location.reload(), 1000);
+      });
+    }
 
-    window.hapusSiswa = (kelas, key) => {
-      const kode = prompt("Masukkan kode akses untuk hapus:");
-      if (kode === "5UGJV99QQT") {
-        remove(ref(db, `siswaAsuh/${userBK}/${kelas}/${key}`));
-      } else {
-        alert("Kode salah.");
-      }
-    };
-
-    window.hapusData = () => {
-      const kode = prompt("Masukkan kode untuk hapus seluruh kelas/siswa:");
-      if (kode === "5UGJV99QQT") {
-        if (confirm("Hapus semua kelas dan siswa untuk guru ini?")) {
-          remove(ref(db, `siswaAsuh/${userBK}`));
-          alert("Berhasil dihapus.");
-        }
-      } else {
-        alert("Kode salah.");
-      }
-    };
-
-    loadKelas();
+    function hapusKelas() {
+      const kode = document.getElementById("kodeAkses").value;
+      if (kode !== "5UGJV99QQT") return alert("Kode salah");
+      const kelas = kelasDropdown.value;
+      if (!kelas) return alert("Pilih kelas dahulu");
+      db.ref("siswa_asuh").orderByChild("guru").equalTo(guruLogin).once("value", snapshot => {
+        snapshot.forEach(child => {
+          if (child.val().kelas === kelas) {
+            db.ref("siswa_asuh/" + child.key).remove();
+          }
+        });
+        alert("Kelas " + kelas + " berhasil dihapus.");
+        setTimeout(() => window.location.reload(), 1000);
+      });
+    }
   </script>
 </body>
 </html>
