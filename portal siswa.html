@@ -12,134 +12,130 @@
 
   <style>
     body {
-      background-color: #f8fafc;
+      /* Mengubah latar belakang menjadi cerah dan berwarna lembut */
+      background-color: #f0f4f8; 
+      background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px);
+      background-size: 20px 20px;
       font-family: 'Plus Jakarta Sans', sans-serif;
       color: #1e293b;
       margin: 0;
       padding-bottom: 50px;
     }
 
-    /* Header Layout Konsisten dengan Main Portal & Portal Guru */
+    /* Header cerah */
     .top-bar {
       background: white;
-      padding: 20px;
-      border-bottom: 1px solid #e2e8f0;
+      padding: 15px 25px;
+      border-bottom: 2px solid #e2e8f0;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      gap: 15px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
-
-    .header-left { flex: 1; min-width: 250px; }
-    .header-center { flex: 1; text-align: center; min-width: 200px; }
-    .header-right { flex: 1; text-align: right; min-width: 250px; }
 
     .welcome-pill {
       background: #dcfce7;
       color: #15803d;
-      padding: 5px 15px;
+      padding: 4px 12px;
       border-radius: 50px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 700;
       display: inline-block;
-      margin-bottom: 5px;
     }
 
     .app-brand {
       font-weight: 800;
       color: #1e40af;
-      line-height: 1.1;
       margin: 0;
-      font-size: 1.4rem;
+      font-size: 1.2rem;
+      line-height: 1.2;
     }
 
     .clock-box {
+      background: #f8fafc;
       border: 2px solid #10b981;
-      border-radius: 10px;
-      padding: 8px 15px;
-      display: inline-block;
-      background: white;
+      border-radius: 12px;
+      padding: 5px 15px;
+      text-align: center;
     }
-    #datetime { font-size: 1.2rem; font-weight: 800; color: #1e293b; font-family: monospace; }
-    #cuaca { font-size: 0.8rem; font-weight: 600; color: #64748b; margin-top: 5px; }
+    #datetime { font-weight: 800; color: #334155; font-size: 1.1rem; }
 
     .section-title {
       text-align: center;
       font-weight: 800;
-      margin: 40px 0 10px 0;
-      font-size: 1.8rem;
+      margin-top: 40px;
+      color: #1e3a8a;
     }
 
     .subtitle-text {
       text-align: center;
       color: #64748b;
-      max-width: 600px;
-      margin: 0 auto 40px auto;
+      margin-bottom: 40px;
+      font-style: italic;
     }
 
-    /* Card Menu Siswa */
+    /* Card Styling agar berwarna tajam */
     .card-portal {
       border: none;
       border-radius: 20px;
-      padding: 25px;
+      padding: 30px 20px;
       color: white;
-      cursor: pointer;
+      height: 150px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      height: 140px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
       text-decoration: none !important;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
 
     .card-portal:hover {
       transform: translateY(-8px);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
     }
 
     .card-portal h5 {
       font-weight: 800;
-      font-size: 1.4rem;
-      margin: 0;
+      font-size: 1.3rem;
       z-index: 2;
+      margin: 0;
     }
 
     .card-portal i {
-      font-size: 4rem;
-      opacity: 0.3;
+      font-size: 5rem;
       position: absolute;
-      right: -5px;
-      bottom: -10px;
+      right: -10px;
+      bottom: -15px;
+      opacity: 0.2;
       transition: 0.3s;
     }
 
-    .card-portal:hover i { opacity: 0.6; transform: scale(1.1); }
+    .card-portal:hover i { opacity: 0.4; transform: rotate(-10deg); }
 
-    /* Gradasi Warna ceria khas Siswa */
-    .s-jadwal { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-    .s-tugas  { background: linear-gradient(135deg, #f59e0b, #d97706); }
-    .s-nilai  { background: linear-gradient(135deg, #ef4444, #b91c1c); }
-    .s-data   { background: linear-gradient(135deg, #06b6d4, #0891b2); }
-    .s-absen  { background: linear-gradient(135deg, #10b981, #047857); }
-    .s-rapor  { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+    /* Warna Gradasi sesuai image_731515.jpg */
+    .bg-blue   { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .bg-orange { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .bg-red    { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+    .bg-cyan   { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+    .bg-green  { background: linear-gradient(135deg, #10b981, #047857); }
+    .bg-purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
 
-    .user-btn {
-      border-radius: 12px;
-      border: 1px solid #e2e8f0;
-      background: white;
-      font-weight: 700;
-      padding: 8px 16px;
+    .user-tag {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      color: #1e40af;
     }
   </style>
 </head>
 <body>
 
-  <!-- Header Section -->
   <header class="top-bar">
     <div class="header-left">
       <div class="welcome-pill" id="greeting">Semangat Belajar! 🚀</div>
@@ -148,20 +144,18 @@
     
     <div class="header-center">
       <div class="clock-box">
-        <div id="datetime">Memuat...</div>
+        <div id="datetime">00:00:00 WIB</div>
+        <small id="weather" style="color:#64748b; font-weight:600;"><i class="bi bi-geo-alt"></i> Medan: ...</small>
       </div>
-      <div id="cuaca"><i class="bi bi-cloud-sun"></i> Memuat Cuaca...</div>
     </div>
 
     <div class="header-right">
       <div class="dropdown">
-        <button class="btn user-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
-          <i class="bi bi-person-circle me-2 text-primary"></i>Siswa SMAN 1
+        <button class="btn user-tag dropdown-toggle" type="button" data-bs-toggle="dropdown">
+          <i class="bi bi-person-circle me-1"></i> Siswa SMAN 1
         </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 15px;">
-          <li><a class="dropdown-item py-2" href="#"><i class="bi bi-person-vcard me-2"></i>Profil Saya</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item py-2 text-danger fw-bold" href="#" onclick="logout()"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+          <li><a class="dropdown-item py-2" href="#" onclick="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
         </ul>
       </div>
     </div>
@@ -173,51 +167,45 @@
 
     <div class="row g-4">
       
-      <!-- Jadwal -->
       <div class="col-md-4">
-        <a href="jadwalmengajar.html" class="card-portal s-jadwal">
+        <a href="jadwal.html" class="card-portal bg-blue">
           <h5>Jadwal Pelajaran</h5>
-          <i class="bi bi-calendar-event-fill"></i>
+          <i class="bi bi-calendar3"></i>
         </a>
       </div>
 
-      <!-- Tugas -->
       <div class="col-md-4">
-        <a href="tugas.html" class="card-portal s-tugas">
+        <a href="tugas.html" class="card-portal bg-orange">
           <h5>Tugas & Proyek</h5>
-          <i class="bi bi-journal-check"></i>
+          <i class="bi bi-clipboard-check"></i>
         </a>
       </div>
 
-      <!-- Nilai -->
       <div class="col-md-4">
-        <a href="https://lookerstudio.google.com/u/0/reporting/f58e617f-42f6-4c19-b513-b2a49de55151/page/page_12345" class="card-portal s-nilai">
+        <a href="nilai.html" class="card-portal bg-red">
           <h5>Nilai Akademik</h5>
-          <i class="bi bi-bar-chart-line-fill"></i>
+          <i class="bi bi-graph-up-arrow"></i>
         </a>
       </div>
 
-      <!-- Data Siswa -->
       <div class="col-md-4">
-        <a href="datasiswa.html" class="card-portal s-data">
+        <a href="profil.html" class="card-portal bg-cyan">
           <h5>Data Diri Siswa</h5>
-          <i class="bi bi-laptop-fill"></i>
+          <i class="bi bi-person-vcard"></i>
         </a>
       </div>
 
-      <!-- Absensi -->
       <div class="col-md-4">
-        <a href="lihatabsensisiswa.html" class="card-portal s-absen">
+        <a href="absen.html" class="card-portal bg-green">
           <h5>Kehadiran / Absensi</h5>
-          <i class="bi bi-check-square-fill"></i>
+          <i class="bi bi-patch-check"></i>
         </a>
       </div>
 
-      <!-- Rapor -->
       <div class="col-md-4">
-        <a href="https://lookerstudio.google.com/u/0/reporting/f58e617f-42f6-4c19-b513-b2a49de55151/page/page_12345" class="card-portal s-rapor">
+        <a href="rapor.html" class="card-portal bg-purple">
           <h5>E-Rapor Digital</h5>
-          <i class="bi bi-file-earmark-text-fill"></i>
+          <i class="bi bi-file-earmark-medical"></i>
         </a>
       </div>
 
@@ -227,41 +215,34 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    function logout() {
-      if(confirm("Apakah kamu yakin ingin keluar dari portal?")) {
-        window.location.href = "index.html";
-      }
-    }
-
     function updateDateTime() {
       const now = new Date();
-      const options = { hour12: false };
-      const time = now.toLocaleTimeString('id-ID', options);
-      const day = now.toLocaleDateString('id-ID', { weekday: 'long' });
-      const date = now.toLocaleDateString('id-ID');
-      
-      document.getElementById("datetime").innerText = time + " WIB";
+      document.getElementById("datetime").innerText = now.toLocaleTimeString('id-ID') + " WIB";
       
       const hrs = now.getHours();
-      let greet = "Semangat Belajar! 🚀";
-      if (hrs >= 11 && hrs < 15) greet = "Selamat Belajar Siang! ☀️";
-      else if (hrs >= 15 && hrs < 18) greet = "Selamat Sore! 🌤️";
-      else if (hrs >= 18 || hrs < 5) greet = "Waktunya Istirahat/Belajar Mandiri! 🌙";
-      document.getElementById("greeting").innerText = greet;
+      let msg = "Selamat Pagi! 🌅";
+      if(hrs >= 11 && hrs < 15) msg = "Selamat Siang! ☀️";
+      else if(hrs >= 15 && hrs < 18) msg = "Selamat Sore! 🌤️";
+      else if(hrs >= 18 || hrs < 5) msg = "Selamat Malam! 🌙";
+      document.getElementById("greeting").innerText = msg;
     }
     setInterval(updateDateTime, 1000);
     updateDateTime();
 
     async function getWeather() {
       try {
-        const res = await fetch(`https://wttr.in/Medan?format=%c+%t`);
+        const res = await fetch(`https://wttr.in/Medan?format=%t+%C`);
         const text = await res.text();
-        document.getElementById("cuaca").innerHTML = `<i class="bi bi-cloud-sun"></i> Medan: ${text.trim()}`;
+        document.getElementById("weather").innerHTML = `<i class="bi bi-cloud-sun"></i> Medan: ${text.trim()}`;
       } catch {
-        document.getElementById("cuaca").innerHTML = `<i class="bi bi-cloud-sun"></i> Medan: 29°C`;
+        document.getElementById("weather").innerText = "Medan: 28°C Berawan";
       }
     }
     getWeather();
+
+    function logout() {
+      if(confirm("Keluar dari portal?")) window.location.href = "index.html";
+    }
   </script>
 </body>
 </html>
