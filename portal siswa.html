@@ -11,261 +11,273 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
-    body {
-      /* ROMBAK: Latar belakang Putih Bersih */
-      background-color: #ffffff; 
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      color: #1e293b;
+    /* RESET TOTAL KE PUTIH */
+    html, body {
+      background-color: #ffffff !important; /* Putih Mutlak */
       margin: 0;
-      padding-bottom: 50px;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #334155;
     }
 
-    /* Header cerah dengan shadow lembut */
-    .top-bar {
-      background: white;
-      padding: 15px 25px;
-      border-bottom: 1px solid #f1f5f9;
+    /* Header Putih Bersih */
+    .header-portal {
+      background-color: #ffffff;
+      padding: 20px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 15px;
-      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03);
+      border-bottom: 1px solid #f1f5f9;
     }
 
-    .welcome-pill {
-      background: #f0fdf4;
-      color: #16a34a;
-      padding: 6px 16px;
-      border-radius: 50px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      display: inline-block;
-      border: 1px solid #dcfce7;
-    }
-
-    .app-brand {
+    .brand-section h1 {
       font-weight: 800;
       color: #1e40af;
-      margin: 0;
-      font-size: 1.3rem;
-      line-height: 1.2;
-      letter-spacing: -0.5px;
-    }
-
-    .clock-box {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 8px 20px;
-      text-align: center;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-    #datetime { font-weight: 800; color: #0f172a; font-size: 1.15rem; font-family: 'Courier New', Courier, monospace; }
-
-    .section-title {
-      text-align: center;
-      font-weight: 800;
-      margin-top: 50px;
-      color: #1e293b;
-      font-size: 2.2rem;
-    }
-
-    .subtitle-text {
-      text-align: center;
-      color: #64748b;
-      margin-bottom: 50px;
-      font-size: 1.1rem;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    /* Card Styling - Tetap Berwarna agar Kontras dengan Latar Putih */
-    .card-portal {
-      border: none;
-      border-radius: 24px;
-      padding: 35px 25px;
-      color: white;
-      height: 160px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      text-decoration: none !important;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-    }
-
-    .card-portal:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
-    }
-
-    .card-portal h5 {
-      font-weight: 700;
       font-size: 1.4rem;
-      z-index: 2;
       margin: 0;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      line-height: 1.1;
     }
 
-    .card-portal i {
-      font-size: 5.5rem;
-      position: absolute;
-      right: -15px;
-      bottom: -20px;
-      opacity: 0.25;
-      transition: 0.4s;
-    }
-
-    .card-portal:hover i { opacity: 0.5; transform: scale(1.1) rotate(-5deg); }
-
-    /* Warna Gradasi Premium */
-    .bg-blue   { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
-    .bg-orange { background: linear-gradient(135deg, #f59e0b, #d97706); }
-    .bg-red    { background: linear-gradient(135deg, #ef4444, #dc2626); }
-    .bg-cyan   { background: linear-gradient(135deg, #06b6d4, #0891b2); }
-    .bg-green  { background: linear-gradient(135deg, #10b981, #059669); }
-    .bg-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
-
-    .user-tag {
-      background: white;
-      border: 1px solid #e2e8f0;
-      padding: 8px 16px;
-      border-radius: 12px;
+    .status-pill {
+      background: #f0fdf4;
+      color: #16a34a;
+      padding: 5px 15px;
+      border-radius: 50px;
+      font-size: 0.75rem;
       font-weight: 700;
-      color: #334155;
-      transition: 0.2s;
+      border: 1px solid #dcfce7;
+      margin-bottom: 5px;
+      display: inline-block;
     }
-    
-    .user-tag:hover {
+
+    /* Widget Jam & Cuaca (Background Terang) */
+    .info-widget {
       background: #f8fafc;
-      border-color: #cbd5e1;
+      padding: 10px 25px;
+      border-radius: 15px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
     }
+    #clock {
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: #0f172a;
+      display: block;
+    }
+    #weather-info {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    /* Container Utama */
+    .main-content {
+      padding: 60px 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-text {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .hero-text h2 {
+      font-weight: 800;
+      font-size: 2.5rem;
+      color: #1e293b;
+    }
+    .hero-text p {
+      color: #94a3b8;
+      font-size: 1.1rem;
+    }
+
+    /* Menu Grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    /* Card Baru: Putih dengan Border Berwarna */
+    .menu-card {
+      background: #ffffff;
+      border-radius: 25px;
+      padding: 40px 30px;
+      text-decoration: none !important;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: all 0.3s ease;
+      border: 2px solid #f1f5f9;
+      position: relative;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-10px);
+      border-color: #3b82f6;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    .icon-box {
+      width: 65px;
+      height: 65px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+    }
+
+    .card-info h5 {
+      margin: 0;
+      font-weight: 700;
+      color: #1e293b;
+      font-size: 1.2rem;
+    }
+    .card-info p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+
+    /* Warna Icon Box */
+    .c-blue   { background: #3b82f6; }
+    .c-orange { background: #f59e0b; }
+    .c-red    { background: #ef4444; }
+    .c-cyan   { background: #06b6d4; }
+    .c-green  { background: #10b981; }
+    .c-purple { background: #8b5cf6; }
+
+    .logout-btn {
+      color: #ef4444;
+      font-weight: 700;
+      border: 1px solid #fee2e2;
+      padding: 8px 20px;
+      border-radius: 12px;
+      background: #fff;
+    }
+    .logout-btn:hover { background: #fef2f2; }
   </style>
 </head>
 <body>
 
-  <!-- TOP BAR -->
-  <header class="top-bar">
-    <div class="header-left">
-      <div class="welcome-pill" id="greeting">Semangat Belajar! 🚀</div>
-      <h1 class="app-brand">PORTAL SISWA<br>SMAN 1 SUNGGAL</h1>
-    </div>
-    
-    <div class="header-center">
-      <div class="clock-box">
-        <div id="datetime">00:00:00 WIB</div>
-        <small id="weather" style="color:#64748b; font-weight:700;"><i class="bi bi-cloud-sun-fill text-warning"></i> Medan: ...</small>
-      </div>
+  <!-- HEADER -->
+  <header class="header-portal">
+    <div class="brand-section">
+      <div class="status-pill" id="greet">Semangat! 🚀</div>
+      <h1>PORTAL SISWA<br>SMAN 1 SUNGGAL</h1>
     </div>
 
-    <div class="header-right">
-      <div class="dropdown">
-        <button class="btn user-tag dropdown-toggle shadow-sm" type="button" data-bs-toggle="dropdown">
-          <i class="bi bi-person-circle me-2 text-primary"></i> Siswa SMAN 1
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2" style="border-radius: 15px;">
-          <li><a class="dropdown-item py-2" href="#" onclick="logout()"><i class="bi bi-box-arrow-right me-2 text-danger"></i>Logout</a></li>
-        </ul>
-      </div>
+    <div class="info-widget">
+      <span id="clock">00:00:00 WIB</span>
+      <span id="weather-info"><i class="bi bi-geo-alt-fill"></i> Medan, ID</span>
+    </div>
+
+    <div>
+      <button class="logout-btn" onclick="logout()">
+        <i class="bi bi-box-arrow-right me-2"></i>Keluar
+      </button>
     </div>
   </header>
 
-  <div class="container">
-    <h2 class="section-title">Dashboard Belajar</h2>
-    <p class="subtitle-text">Akses semua kebutuhan akademikmu dalam satu tempat dengan mudah dan cepat.</p>
+  <!-- CONTENT -->
+  <div class="main-content">
+    <div class="hero-text">
+      <h2>Pusat Belajar Siswa</h2>
+      <p>Kelola tugas, jadwal, dan pantau prestasimu setiap hari.</p>
+    </div>
 
-    <div class="row g-4">
+    <div class="menu-grid">
       
-      <!-- Jadwal -->
-      <div class="col-md-4">
-        <a href="jadwal.html" class="card-portal bg-blue">
+      <!-- Item 1 -->
+      <a href="#" class="menu-card">
+        <div class="icon-box c-blue">
+          <i class="bi bi-calendar-check"></i>
+        </div>
+        <div class="card-info">
           <h5>Jadwal Pelajaran</h5>
-          <i class="bi bi-calendar3"></i>
-        </a>
-      </div>
+          <p>Lihat sesi kelas hari ini</p>
+        </div>
+      </a>
 
-      <!-- Tugas -->
-      <div class="col-md-4">
-        <a href="tugas.html" class="card-portal bg-orange">
+      <!-- Item 2 -->
+      <a href="#" class="menu-card">
+        <div class="icon-box c-orange">
+          <i class="bi bi-journal-bookmark"></i>
+        </div>
+        <div class="card-info">
           <h5>Tugas & Proyek</h5>
-          <i class="bi bi-clipboard-check"></i>
-        </a>
-      </div>
+          <p>Kumpulkan tepat waktu</p>
+        </div>
+      </a>
 
-      <!-- Nilai -->
-      <div class="col-md-4">
-        <a href="nilai.html" class="card-portal bg-red">
+      <!-- Item 3 -->
+      <a href="#" class="menu-card">
+        <div class="icon-box c-red">
+          <i class="bi bi-bar-chart"></i>
+        </div>
+        <div class="card-info">
           <h5>Nilai Akademik</h5>
-          <i class="bi bi-graph-up-arrow"></i>
-        </a>
-      </div>
+          <p>Cek hasil ujian & kuis</p>
+        </div>
+      </a>
 
-      <!-- Profil -->
-      <div class="col-md-4">
-        <a href="profil.html" class="card-portal bg-cyan">
-          <h5>Data Diri Siswa</h5>
-          <i class="bi bi-person-vcard"></i>
-        </a>
-      </div>
+      <!-- Item 4 -->
+      <a href="#" class="menu-card">
+        <div class="icon-box c-cyan">
+          <i class="bi bi-person-badge"></i>
+        </div>
+        <div class="card-info">
+          <h5>Profil Siswa</h5>
+          <p>Data diri & akun</p>
+        </div>
+      </a>
 
-      <!-- Absensi -->
-      <div class="col-md-4">
-        <a href="absen.html" class="card-portal bg-green">
-          <h5>Kehadiran / Absensi</h5>
-          <i class="bi bi-patch-check"></i>
-        </a>
-      </div>
+      <!-- Item 5 -->
+      <a href="#" class="menu-card">
+        <div class="icon-box c-green">
+          <i class="bi bi-ui-checks"></i>
+        </div>
+        <div class="card-info">
+          <h5>Absensi</h5>
+          <p>Rekap kehadiran kelas</p>
+        </div>
+      </a>
 
-      <!-- Rapor -->
-      <div class="col-md-4">
-        <a href="rapor.html" class="card-portal bg-purple">
+      <!-- Item 6 -->
+      <a href="#" class="menu-card">
+        <div class="icon-box c-purple">
+          <i class="bi bi-file-earmark-pdf"></i>
+        </div>
+        <div class="card-info">
           <h5>E-Rapor Digital</h5>
-          <i class="bi bi-file-earmark-medical"></i>
-        </a>
-      </div>
+          <p>Unduh hasil semester</p>
+        </div>
+      </a>
 
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
   <script>
-    function updateDateTime() {
+    function updateTime() {
       const now = new Date();
-      const timeString = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      document.getElementById("datetime").innerText = timeString + " WIB";
+      document.getElementById("clock").innerText = now.toLocaleTimeString('id-ID') + " WIB";
       
       const hrs = now.getHours();
-      let msg = "Selamat Pagi! 🌅";
-      if(hrs >= 11 && hrs < 15) msg = "Selamat Siang! ☀️";
-      else if(hrs >= 15 && hrs < 18) msg = "Selamat Sore! 🌤️";
-      else if(hrs >= 18 || hrs < 5) msg = "Selamat Malam! 🌙";
-      document.getElementById("greeting").innerText = msg;
+      let text = "Selamat Pagi! 🌅";
+      if(hrs >= 11 && hrs < 15) text = "Selamat Siang! ☀️";
+      else if(hrs >= 15 && hrs < 18) text = "Selamat Sore! 🌤️";
+      else if(hrs >= 18 || hrs < 5) text = "Selamat Malam! 🌙";
+      document.getElementById("greet").innerText = text;
     }
-    setInterval(updateDateTime, 1000);
-    updateDateTime();
-
-    async function getWeather() {
-      try {
-        const res = await fetch(`https://wttr.in/Medan?format=%t`);
-        const text = await res.text();
-        document.getElementById("weather").innerHTML = `<i class="bi bi-thermometer-half text-danger"></i> Medan: ${text.trim()} Berawan`;
-      } catch {
-        document.getElementById("weather").innerText = "Medan: 29°C Cerah";
-      }
-    }
-    getWeather();
+    setInterval(updateTime, 1000);
+    updateTime();
 
     function logout() {
-      if(confirm("Apakah Anda yakin ingin keluar dari portal?")) {
-        window.location.href = "index.html";
-      }
+      if(confirm("Yakin ingin keluar?")) window.location.href = "index.html";
     }
   </script>
+
 </body>
 </html>
