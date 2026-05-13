@@ -3,187 +3,250 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PORTAL UTAMA - SMAN 1 SUNGGAL</title>
+  <title>SMARTSCHOOL - SMAN 1 SUNGGAL</title>
 
-  <!-- Bootstrap CSS & Icons -->
+  <!-- Google Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
   <style>
     body {
-      background: linear-gradient(to right, #1a2980, #26d0ce);
-      font-family: 'Poppins', sans-serif;
-      color: #fff;
-      padding-top: 30px;
-    }
-    .title {
-      text-align: center;
-      font-size: 34px;
-      font-weight: bold;
-      color: #fff;
-      text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-    }
-    .subtitle {
-      text-align: center;
-      font-size: 16px;
-      color: #e0f7ff;
-      margin-bottom: 30px;
-    }
-    .card {
-      border: none;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      cursor: pointer;
-      color: #fff;
-    }
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-    }
-    .card-body {
-      padding: 30px 20px;
-    }
-    .icon {
-      font-size: 2.7rem;
-      color: #ffffff;
-      margin-bottom: 10px;
-      transition: color 0.3s ease;
-    }
-    .card:hover .icon {
-      color: #00ffff;
-    }
-    .input-group {
-      max-width: 400px;
-      margin: 40px auto;
-    }
-    .top-info {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .top-info p {
+      background-color: #f3f6f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: #1e293b;
       margin: 0;
-      font-size: 14px;
-      color: #eaffff;
+      padding-bottom: 50px;
+    }
+
+    /* Header Berdasarkan Gambar image_73799c.png */
+    .top-bar {
+      background: white;
+      padding: 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .header-left { flex: 1; min-width: 250px; }
+    .header-center { flex: 1; text-align: center; min-width: 200px; }
+    .header-right { flex: 1; text-align: right; font-size: 0.85rem; color: #64748b; min-width: 250px; }
+
+    .welcome-pill {
+      background: #f1f5f9;
+      padding: 5px 15px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+
+    .app-brand {
+      font-weight: 800;
+      color: #1e40af;
+      line-height: 1.1;
+      margin: 0;
+      font-size: 1.4rem;
+    }
+
+    .clock-box {
+      border: 2px solid #3b82f6;
+      border-radius: 10px;
+      padding: 10px 20px;
+      display: inline-block;
+      background: white;
+    }
+    .clock-label { font-size: 0.65rem; font-weight: 800; color: #1e293b; display: block; }
+    #time { font-size: 1.8rem; font-weight: 800; color: #1e293b; font-family: monospace; }
+
+    .section-title {
+      text-align: center;
+      font-weight: 800;
+      margin: 30px 0;
+      font-size: 1.5rem;
+    }
+    .text-gradient {
+      background: linear-gradient(to right, #ef4444, #8b5cf6, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Grid Card Layout */
+    .card-portal {
+      border: none;
+      border-radius: 15px;
+      padding: 25px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 130px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .card-portal:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .card-portal h5 {
+      font-weight: 800;
+      font-size: 1.3rem;
+      margin: 0;
+      max-width: 60%;
+      z-index: 2;
+    }
+
+    .card-portal i {
+      font-size: 3.5rem;
+      opacity: 0.4;
+      position: absolute;
+      right: 15px;
+      transition: 0.3s;
+    }
+    .card-portal:hover i { opacity: 0.8; transform: scale(1.1); }
+
+    /* Gradients dari gambar image_73799c.png */
+    .bg-purple { background: linear-gradient(135deg, #a855f7, #7e22ce); }
+    .bg-darkblue { background: linear-gradient(135deg, #2563eb, #1e3a8a); }
+    .bg-green { background: linear-gradient(135deg, #22c55e, #15803d); }
+    .bg-cyan { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+    .bg-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
+    .bg-pink { background: linear-gradient(135deg, #ec4899, #be185d); }
+    .bg-yellow { background: linear-gradient(135deg, #facc15, #ca8a04); }
+    .bg-teal { background: linear-gradient(135deg, #14b8a6, #0d9488); }
+    .bg-indigo { background: linear-gradient(135deg, #6366f1, #4338ca); }
+
+    /* Footer Admin */
+    .admin-card {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 40px;
+      border: 1px solid #e2e8f0;
     }
   </style>
 </head>
 <body>
 
-  <div class="container text-center">
-    <div class="top-info">
-      <h4 id="greeting"></h4>
-      <p id="time">Memuat waktu...</p>
-      <p><em>"Pendidikan adalah senjata paling ampuh untuk mengubah dunia." – Nelson Mandela</em></p>
+  <!-- Header Section -->
+  <header class="top-bar">
+    <div class="header-left">
+      <div class="welcome-pill" id="greeting">Selamat Pagi 👋</div>
+      <h1 class="app-brand">APLIKASI SMARTSCHOOL<br>SMAN 1 SUNGGAL</h1>
+    </div>
+    
+    <div class="header-center">
+      <div class="clock-box">
+        <span class="clock-label">WAKTU SAAT INI:</span>
+        <div id="time">00:00:00 WIB</div>
+      </div>
     </div>
 
-    <h1 class="title">PORTAL UTAMA<br>SMAN 1 SUNGGAL</h1>
-    <div class="subtitle">"Menuju sekolah digital yang inspiratif dan berkelas."</div>
+    <div class="header-right">
+      <p><i>"Nelson Mandela yang menginspirasikan orang akan kemajuan dunia yang digital ini."</i><br><b>- Nelson Mandela</b></p>
+    </div>
+  </header>
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 justify-content-center">
+  <div class="container">
+    <h2 class="section-title">PORTAL UTAMA <span class="text-gradient">SMAN 1 SUNGGAL</span></h2>
 
-      <div class="col">
-        <div class="card text-center" onclick="handleClick('portal guru.html')">
-          <div class="card-body">
-            <i class="bi bi-person-badge icon"></i>
-            <h5>Portal Guru</h5>
-          </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card-portal bg-purple" onclick="handleClick('portal guru.html')">
+          <h5>Portal Guru</h5>
+          <i class="bi bi-person-badge"></i>
         </div>
       </div>
 
-      <div class="col">
-        <div class="card text-center" onclick="verifikasiTU()">
-          <div class="card-body">
-            <i class="bi bi-briefcase-fill icon"></i>
-            <h5>Administrasi TU</h5>
-          </div>
+      <div class="col-md-4">
+        <div class="card-portal bg-darkblue" onclick="verifikasiTU()">
+          <h5>Administrasi TU</h5>
+          <i class="bi bi-briefcase"></i>
         </div>
       </div>
 
-      <div class="col">
-        <div class="card text-center" onclick="handleClick('portal siswa.html')">
-          <div class="card-body">
-            <i class="bi bi-person-lines-fill icon"></i>
-            <h5>Portal Siswa</h5>
-          </div>
+      <div class="col-md-4">
+        <div class="card-portal bg-green" onclick="handleClick('portal siswa.html')">
+          <h5>Portal Siswa</h5>
+          <i class="bi bi-mortarboard"></i>
         </div>
       </div>
 
-      <div class="col">
-        <div class="card text-center" onclick="handleClick('portal aplikasi sekolah.html')">
-          <div class="card-body">
-            <i class="bi bi-laptop-fill icon"></i>
-            <h5>Aplikasi Sekolah</h5>
-          </div>
+      <div class="col-md-4">
+        <div class="card-portal bg-cyan" onclick="handleClick('portal aplikasi sekolah.html')">
+          <h5>Aplikasi Sekolah</h5>
+          <i class="bi bi-laptop"></i>
         </div>
       </div>
 
-      <div class="col">
-        <div class="card text-center" onclick="handleClick('portal kepala sekolah.html')">
-          <div class="card-body">
-            <i class="bi bi-person-workspace icon"></i>
-            <h5>Ruang Kepala Sekolah</h5>
-          </div>
+      <div class="col-md-4">
+        <div class="card-portal bg-orange" onclick="handleClick('portal kepala sekolah.html')">
+          <h5>Ruang Kepala Sekolah</h5>
+          <i class="bi bi-shield-lock"></i>
         </div>
       </div>
 
-      <div class="col">
-        <div class="card text-center" onclick="handleClick('poertal pegawai.html')">
-          <div class="card-body">
-            <i class="bi bi-people-fill icon"></i>
-            <h5>Portal Pegawai</h5>
-          </div>
+      <div class="col-md-4">
+        <div class="card-portal bg-pink" onclick="handleClick('poertal pegawai.html')">
+          <h5>Portal Pegawai</h5>
+          <i class="bi bi-people"></i>
         </div>
       </div>
 
-      <div class="col">
-        <div class="card text-center" onclick="handleClick('portal bk.html')">
-          <div class="card-body">
-            <i class="bi bi-person-heart icon"></i>
-            <h5>Portal BK</h5>
-          </div>
+      <div class="col-md-4">
+        <div class="card-portal bg-yellow" onclick="handleClick('portal bk.html')">
+          <h5>Portal BK</h5>
+          <i class="bi bi-heart-pulse"></i>
         </div>
       </div>
 
-      <div class="col">
-        <div class="card text-center" onclick="handleClick('portal orang tua.html')">
-          <div class="card-body">
-            <i class="bi bi-person-workspace icon"></i>
-            <h5>Portal Orang Tua</h5>
-          </div>
+      <div class="col-md-4">
+        <div class="card-portal bg-teal" onclick="handleClick('portal orang tua.html')">
+          <h5>Portal Orang Tua</h5>
+          <i class="bi bi-house-door"></i>
         </div>
       </div>
 
-       <div class="col">
-        <div class="card text-center" onclick="verifikasiKeuangan()">
-          <div class="card-body">
-            <i class="bi bi-briefcase-fill icon"></i>
-            <h5>Portal Keuangan</h5>
-          </div>
+      <div class="col-md-4">
+        <div class="card-portal bg-indigo" onclick="verifikasiKeuangan()">
+          <h5>Portal Keuangan</h5>
+          <i class="bi bi-cash-stack"></i>
         </div>
       </div>
-
-
-
-
-
     </div>
 
-    <!-- Backup & Restore -->
-    <div class="input-group mt-5">
-      <input type="text" class="form-control" placeholder="Masukkan kode verifikasi" id="kode">
-      <button class="btn btn-outline-light" onclick="exportDatabase()">Export</button>
-      <button class="btn btn-outline-light" onclick="document.getElementById('importFile').click()">Import</button>
+    <!-- Admin Panel -->
+    <div class="admin-card mx-auto" style="max-width: 800px;">
+      <h6 class="fw-bold mb-3">Backup / Restore</h6>
+      <div class="row g-2">
+        <div class="col-md-6">
+          <input type="password" class="form-control" placeholder="Masukkan Kode" id="kode">
+        </div>
+        <div class="col-md-3 col-6">
+          <button class="btn btn-primary w-100" onclick="exportDatabase()"><i class="bi bi-cloud-download me-2"></i>Export</button>
+        </div>
+        <div class="col-md-3 col-6">
+          <button class="btn btn-outline-secondary w-100" onclick="document.getElementById('importFile').click()"><i class="bi bi-cloud-upload me-2"></i>Import</button>
+        </div>
+      </div>
+      <input type="file" id="importFile" accept=".json" onchange="importDatabase(event)" style="display:none">
     </div>
-    <input type="file" id="importFile" accept=".json" onchange="importDatabase(event)" style="display:none">
-
   </div>
 
-  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
   <script>
+    // Konfigurasi Firebase (Tetap sesuai aslinya)
     const firebaseConfig = {
       apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
       authDomain: "loginsmartschool-4f57d.firebaseapp.com",
@@ -197,89 +260,57 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    function handleClick(url) {
-      window.location.href = url;
-    }
+    function handleClick(url) { window.location.href = url; }
 
     function verifikasiTU() {
-      const kode = prompt("Masukkan kode akses untuk TU:");
-      if (kode === "sunggaljuara") {
-        window.location.href = "portal tu.html";
-      } else if (kode !== null) {
-        alert("Kode salah!");
-      }
+      const kode = prompt("Kode akses TU:");
+      if (kode === "sunggaljuara") window.location.href = "portal tu.html";
+      else if (kode) alert("Kode Salah!");
     }
 
-function verifikasiKeuangan() {
-      const kode = prompt("Masukkan kode akses untuk Manajemen Keuangan:");
-      if (kode === "5UGJV99QQT") {
-        window.location.href = "portal keuangan.html";
-      } else if (kode !== null) {
-        alert("Kode salah!");
-      }
+    function verifikasiKeuangan() {
+      const kode = prompt("Kode akses Keuangan:");
+      if (kode === "5UGJV99QQT") window.location.href = "portal keuangan.html";
+      else if (kode) alert("Kode Salah!");
     }
-
-
-
-
-
-
-
-
 
     function exportDatabase() {
-      const kode = document.getElementById('kode').value.trim();
-      if (kode !== '5UGJV99QQT') return alert('Kode salah!');
+      const kode = document.getElementById('kode').value;
+      if (kode !== '5UGJV99QQT') return alert('Akses Ditolak!');
       db.ref().once('value', snapshot => {
-        const data = snapshot.val();
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const blob = new Blob([JSON.stringify(snapshot.val(), null, 2)], { type: 'application/json' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = 'backup_smansunggul.json';
-        document.body.appendChild(link);
+        link.download = 'Backup_SmartSchool.json';
         link.click();
-        document.body.removeChild(link);
-        alert('Export berhasil!');
       });
     }
 
     function importDatabase(event) {
-      const kode = document.getElementById('kode').value.trim();
-      if (kode !== '5UGJV99QQT') return alert('Kode salah!');
-      const file = event.target.files[0];
-      if (!file) return;
+      const kode = document.getElementById('kode').value;
+      if (kode !== '5UGJV99QQT') return alert('Akses Ditolak!');
       const reader = new FileReader();
-      reader.onload = function(e) {
-        const data = JSON.parse(e.target.result);
-        db.ref().set(data, err => {
-          if (err) alert("Gagal mengimport!");
-          else {
-            alert("Import berhasil!");
-            location.reload();
-          }
+      reader.onload = (e) => {
+        db.ref().set(JSON.parse(e.target.result), err => {
+          if (!err) { alert("Data berhasil diimport!"); location.reload(); }
         });
       };
-      reader.readAsText(file);
+      reader.readAsText(event.target.files[0]);
     }
 
-    function updateTimeAndGreeting() {
+    function updateHeader() {
       const now = new Date();
-      const hours = now.getHours();
-      const time = now.toLocaleTimeString();
-      let greeting = "Selamat datang";
-
-      if (hours >= 4 && hours < 11) greeting = "Selamat pagi 👋";
-      else if (hours >= 11 && hours < 15) greeting = "Selamat siang 🌞";
-      else if (hours >= 15 && hours < 18) greeting = "Selamat sore 🌤️";
-      else greeting = "Selamat malam 🌙";
-
-      document.getElementById("greeting").innerText = greeting;
-      document.getElementById("time").innerText = `Waktu saat ini: ${time}`;
+      const hrs = now.getHours();
+      document.getElementById("time").innerText = now.toLocaleTimeString('id-ID') + " WIB";
+      
+      let greet = "Selamat Pagi 👋";
+      if (hrs >= 11 && hrs < 15) greet = "Selamat Siang ☀️";
+      else if (hrs >= 15 && hrs < 18) greet = "Selamat Sore 🌤️";
+      else if (hrs >= 18 || hrs < 5) greet = "Selamat Malam 🌙";
+      document.getElementById("greeting").innerText = greet;
     }
-
-    setInterval(updateTimeAndGreeting, 1000);
+    setInterval(updateHeader, 1000);
+    updateHeader();
   </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
