@@ -12,8 +12,8 @@
 
   <style>
     :root {
-      --bg-light: #f8fafc;
-      --bg-card: rgba(255, 255, 255, 0.85);
+      --bg-light: #ffffff; /* Diubah mutlak menjadi putih bersih */
+      --bg-card: rgba(255, 255, 255, 0.95);
       --text-main: #0f172a;
       --text-muted: #64748b;
     }
@@ -21,8 +21,8 @@
     body {
       background-color: var(--bg-light);
       background-image: 
-        radial-gradient(circle at 10% 10%, rgba(37, 99, 235, 0.08) 0%, transparent 45%),
-        radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.08) 0%, transparent 45%);
+        radial-gradient(circle at 10% 10%, rgba(37, 99, 235, 0.05) 0%, transparent 45%),
+        radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.05) 0%, transparent 45%);
       font-family: 'Plus Jakarta Sans', sans-serif;
       color: var(--text-main);
       margin: 0;
@@ -32,7 +32,7 @@
 
     /* Top Bar Header */
     .top-bar {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       padding: 16px 30px;
@@ -92,10 +92,10 @@
       font-weight: 500;
     }
 
-    /* Super Menarik Holographic Card Portal */
+    /* Holographic Card Portal */
     .card-portal {
       background: var(--bg-card);
-      border: 1px solid rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(226, 232, 240, 0.9);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border-radius: 20px;
@@ -193,7 +193,7 @@
       <div class="subtitle">"Data akurat, pelayanan cepat, arsip rapi, semangat luar biasa!"</div>
     </div>
 
-    <!-- ✅ MENU 12 ITEM DENGAN TAMPILAN KARTU KACA & GRADASI -->
+    <!-- ✅ MENU 12 ITEM -->
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
 
       <div class="col">
