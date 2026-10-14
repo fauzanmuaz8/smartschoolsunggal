@@ -5,208 +5,278 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PORTAL TU - SMAN 1 SUNGGAL</title>
 
-  <!-- Bootstrap & Icons -->
+  <!-- Google Fonts & Bootstrap -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
-    body {
-      background: linear-gradient(to right, #134e9e, #61dafb);
-      font-family: 'Segoe UI', sans-serif;
-      color: #fff;
-      padding-top: 20px;
+    :root {
+      --bg-light: #f8fafc;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
     }
-    .topbar {
+
+    body {
+      background-color: var(--bg-light);
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(37, 99, 235, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.08) 0%, transparent 45%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-main);
+      margin: 0;
+      padding-bottom: 60px;
+      min-height: 100vh;
+    }
+
+    /* Top Bar Header */
+    .top-bar {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 16px 30px;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 20px;
-      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     }
+
     .clock-info {
-      font-size: 14px;
-      color: #eaffff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: #f1f5f9;
+      padding: 6px 14px;
+      border-radius: 50px;
+      border: 1px solid #e2e8f0;
     }
+
     .dropdown .btn {
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+      font-weight: 700;
+      border-radius: 50px;
+      padding: 6px 18px;
+      font-size: 0.85rem;
     }
     .dropdown .btn:hover {
-      background: #dc3545;
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    /* Header Titles */
+    .header-container {
+      text-align: center;
+      margin: 40px 0 35px 0;
     }
     .title {
-      text-align: center;
-      font-size: 32px;
-      font-weight: bold;
-      text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #1e3a8a 30%, #2563eb 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
     }
     .subtitle {
-      text-align: center;
-      font-size: 16px;
-      color: #e0f7ff;
-      margin-bottom: 30px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 500;
     }
-    .card {
-      border: none;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    /* Super Menarik Holographic Card Portal */
+    .card-portal {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 20px;
+      padding: 22px;
+      color: white;
       cursor: pointer;
-      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 130px;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
     }
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+
+    .card-portal::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%; width: 200%; height: 200%;
+      background: linear-gradient(60deg, transparent, rgba(255,255,255,0.3), transparent);
+      transform: rotate(45deg) translateX(-100%);
+      transition: transform 0.7s ease-in-out;
     }
-    .card-body {
-      padding: 30px 20px;
+
+    .card-portal:hover::after {
+      transform: rotate(45deg) translateX(100%);
     }
-    .icon {
-      font-size: 2.5rem;
+
+    .card-portal:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
+    }
+
+    .card-portal h5 {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin: 0;
+      max-width: 65%;
+      z-index: 2;
+      letter-spacing: -0.2px;
       color: #ffffff;
-      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      line-height: 1.3;
     }
-    .card:hover .icon {
-      color: #00ffff;
+
+    .card-portal i {
+      font-size: 3.5rem;
+      opacity: 0.3;
+      position: absolute;
+      right: 18px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1;
+      color: #ffffff;
     }
-    h5 {
-      font-size: 18px;
-      margin-top: 10px;
-    }
+    .card-portal:hover i { opacity: 0.85; transform: scale(1.15) rotate(-6deg); }
+
+    /* Palet Warna Gradasi Elegan & Cerah untuk 12 Menu TU */
+    .bg-grad-1 { background: linear-gradient(135deg, #60a5fa, #1d4ed8); box-shadow: 0 10px 25px rgba(29, 78, 216, 0.2); }
+    .bg-grad-2 { background: linear-gradient(135deg, #c084fc, #9333ea); box-shadow: 0 10px 25px rgba(147, 51, 234, 0.2); }
+    .bg-grad-3 { background: linear-gradient(135deg, #34d399, #059669); box-shadow: 0 10px 25px rgba(5, 150, 105, 0.2); }
+    .bg-grad-4 { background: linear-gradient(135deg, #fb923c, #c2410c); box-shadow: 0 10px 25px rgba(194, 65, 12, 0.2); }
+    .bg-grad-5 { background: linear-gradient(135deg, #22d3ee, #0284c7); box-shadow: 0 10px 25px rgba(2, 132, 199, 0.2); }
+    .bg-grad-6 { background: linear-gradient(135deg, #f472b6, #be185d); box-shadow: 0 10px 25px rgba(190, 24, 93, 0.2); }
+    .bg-grad-7 { background: linear-gradient(135deg, #818cf8, #4338ca); box-shadow: 0 10px 25px rgba(67, 56, 202, 0.2); }
+    .bg-grad-8 { background: linear-gradient(135deg, #facc15, #ca8a04); box-shadow: 0 10px 25px rgba(202, 138, 4, 0.2); }
+    .bg-grad-9 { background: linear-gradient(135deg, #2dd4bf, #0f766e); box-shadow: 0 10px 25px rgba(15, 118, 110, 0.2); }
+    .bg-grad-10 { background: linear-gradient(135deg, #fb7185, #e11d48); box-shadow: 0 10px 25px rgba(225, 29, 72, 0.2); }
+    .bg-grad-11 { background: linear-gradient(135deg, #a78bfa, #6d28d9); box-shadow: 0 10px 25px rgba(109, 40, 217, 0.2); }
+    .bg-grad-12 { background: linear-gradient(135deg, #94a3b8, #475569); box-shadow: 0 10px 25px rgba(71, 85, 105, 0.2); }
   </style>
 </head>
 <body>
 
   <!-- ✅ TOPBAR -->
-  <div class="topbar">
-    <div class="clock-info" id="datetime">Memuat waktu...</div>
-    <div class="clock-info" id="cuaca">Memuat cuaca...</div>
+  <div class="top-bar">
+    <div class="clock-info" id="datetime"><i class="bi bi-clock me-1 text-primary"></i> Memuat waktu...</div>
+    <div class="clock-info" id="cuaca"><i class="bi bi-cloud-sun me-1 text-warning"></i> Memuat cuaca...</div>
     <div class="dropdown">
       <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        TU: Nama Pengguna
+        <i class="bi bi-person-circle me-1"></i> TU: Nama Pengguna
       </button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
-        <li><a class="dropdown-item disabled">SMAN 1 Sunggal</a></li>
+      <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 rounded-4 p-2">
+        <li><a class="dropdown-item rounded-3 py-2 fw-semibold text-danger" href="#" onclick="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item rounded-3 py-2 text-muted disabled small">SMAN 1 Sunggal</a></li>
       </ul>
     </div>
   </div>
 
   <!-- ✅ HEADER -->
-  <div class="container text-center">
-    <div class="title">PORTAL TATA USAHA <br>SMAN 1 SUNGGAL</div>
-    <div class="subtitle">"Data akurat, pelayanan cepat, arsip rapi, semangat luar biasa!"</div>
+  <div class="container">
+    <div class="header-container">
+      <div class="title">PORTAL TATA USAHA <br>SMAN 1 SUNGGAL</div>
+      <div class="subtitle">"Data akurat, pelayanan cepat, arsip rapi, semangat luar biasa!"</div>
+    </div>
 
-    <!-- ✅ MENU 12 ITEM -->
+    <!-- ✅ MENU 12 ITEM DENGAN TAMPILAN KARTU KACA & GRADASI -->
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
 
       <div class="col">
-        <div class="card text-center" onclick="handleClick('datasiswa.html')">
-          <div class="card-body">
-            <i class="bi bi-people-fill icon"></i>
-            <h5>Data Siswa</h5>
-          </div>
+        <div class="card-portal bg-grad-1" onclick="handleClick('datasiswa.html')">
+          <h5>Data Siswa</h5>
+          <i class="bi bi-people-fill"></i>
         </div>
       </div>
 
       <div class="col">
-        <div class="card text-center" onclick="handleClick('https://nimble.li/6dw73g79')">
-          <div class="card-body">
-            <i class="bi bi-person-badge-fill icon"></i>
-            <h5>Data Pegawai</h5>
-          </div>
+        <div class="card-portal bg-grad-2" onclick="handleClick('https://nimble.li/6dw73g79')">
+          <h5>Data Pegawai</h5>
+          <i class="bi bi-person-badge-fill"></i>
         </div>
       </div>
 
       <div class="col">
-        <div class="card text-center" onclick="handleClick('https://lookerstudio.google.com/reporting/576ceed2-9e23-4786-8beb-28dfd1612fad')">
-          <div class="card-body">
-            <i class="bi bi-envelope-open-fill icon"></i>
-            <h5>Cari Surat Masuk</h5>
-          </div>
+        <div class="card-portal bg-grad-3" onclick="handleClick('https://lookerstudio.google.com/reporting/576ceed2-9e23-4786-8beb-28dfd1612fad')">
+          <h5>Cari Surat Masuk</h5>
+          <i class="bi bi-envelope-open-fill"></i>
         </div>
       </div>
 
       <div class="col">
-        <div class="card text-center" onclick="handleClick('laporanpegawai.html')">
-          <div class="card-body">
-            <i class="bi bi-send-fill icon"></i>
-            <h5>Laporan Kinerja & Monitoring Kepsek</h5>
-          </div>
+        <div class="card-portal bg-grad-4" onclick="handleClick('laporanpegawai.html')">
+          <h5>Laporan Kinerja & Monitoring Kepsek</h5>
+          <i class="bi bi-send-fill"></i>
         </div>
       </div>
 
       <div class="col">
-        <div class="card text-center" onclick="handleClick('https://docs.google.com/forms/d/e/1FAIpQLScjGvdS6BMHgxoAD9t73oZ31U7SF5-3p5Xy4NdA8NzKo9eHBg/viewform?usp=sharing&ouid=117833061170278763466')">
-          <div class="card-body">
-            <i class="bi bi-calendar2-week-fill icon"></i>
-            <h5>ARSIP SURAT MUTASI KELUAR & MASUK</h5>
-          </div>
+        <div class="card-portal bg-grad-5" onclick="handleClick('https://docs.google.com/forms/d/e/1FAIpQLScjGvdS6BMHgxoAD9t73oZ31U7SF5-3p5Xy4NdA8NzKo9eHBg/viewform?usp=sharing&ouid=117833061170278763466')">
+          <h5>Arsip Surat Mutasi Keluar & Masuk</h5>
+          <i class="bi bi-calendar2-week-fill"></i>
         </div>
       </div>
 
       <div class="col">
-        <div class="card text-center" onclick="handleClick('https://script.google.com/macros/s/AKfycbzZpl4rxxwZ7rWhKCh4d4PNDknl9x1mHKWwifrqwyTk3tT_eXfsdmrmBYWFjaQ0SOlY5w/exec')">
-          <div class="card-body">
-            <i class="bi bi-box-seam-fill icon"></i>
-            <h5>Input Arsip Surat Masuk & Keluar</h5>
-          </div>
+        <div class="card-portal bg-grad-6" onclick="handleClick('https://script.google.com/macros/s/AKfycbzZpl4rxxwZ7rWhKCh4d4PNDknl9x1mHKWwifrqwyTk3tT_eXfsdmrmBYWFjaQ0SOlY5w/exec')">
+          <h5>Input Arsip Surat Masuk & Keluar</h5>
+          <i class="bi bi-box-seam-fill"></i>
         </div>
       </div>
 
       <div class="col">
-        <div class="card text-center" onclick="handleClick('https://jstrieb.github.io/link-lock/#...')">
-          <div class="card-body">
-            <i class="bi bi-archive-fill icon"></i>
-            <h5>Arsip Dokumentasi Foto</h5>
-          </div>
+        <div class="card-portal bg-grad-7" onclick="handleClick('https://jstrieb.github.io/link-lock/#...')">
+          <h5>Arsip Dokumentasi Foto</h5>
+          <i class="bi bi-archive-fill"></i>
         </div>
       </div>
 
       <div class="col">
-        <div class="card text-center" onclick="handleClick('https://drive.google.com/drive/folders/1q6qmcXbw8mpRMYGli6lGEDGBo78n76Uu?usp=sharing')">
-          <div class="card-body">
-            <i class="bi bi-check2-square icon"></i>
-            <h5>Arsip Dokumentasi File</h5>
-          </div>
+        <div class="card-portal bg-grad-8" onclick="handleClick('https://drive.google.com/drive/folders/1q6qmcXbw8mpRMYGli6lGEDGBo78n76Uu?usp=sharing')">
+          <h5>Arsip Dokumentasi File</h5>
+          <i class="bi bi-check2-square"></i>
         </div>
       </div>
 
       <div class="col">
-        <div class="card text-center" onclick="handleClick('https://jstrieb.github.io/link-lock/#...')">
-          <div class="card-body">
-            <i class="bi bi-journal-text icon"></i>
-            <h5>Arsip Ijazah</h5>
-          </div>
+        <div class="card-portal bg-grad-9" onclick="handleClick('https://jstrieb.github.io/link-lock/#...')">
+          <h5>Arsip Ijazah</h5>
+          <i class="bi bi-journal-text"></i>
         </div>
       </div>
 
       <div class="col">
-        <div class="card text-center" onclick="handleClick('https://lookerstudio.google.com/reporting/f58e617f-42f6-4c19-b513-b2a49de55151')">
-          <div class="card-body">
-            <i class="bi bi-journal-text icon"></i>
-            <h5>E Rapor</h5>
-          </div>
+        <div class="card-portal bg-grad-10" onclick="handleClick('https://lookerstudio.google.com/reporting/f58e617f-42f6-4c19-b513-b2a49de55151')">
+          <h5>E Rapor</h5>
+          <i class="bi bi-file-earmark-text-fill"></i>
         </div>
       </div>
 
       <div class="col">
-        <div class="card text-center" onclick="handleClick('peminjamantatausaha.html')">
-          <div class="card-body">
-            <i class="bi bi-box-seam-fill icon"></i>
-            <h5>Peminjaman ASET TU</h5>
-          </div>
+        <div class="card-portal bg-grad-11" onclick="handleClick('peminjamantatausaha.html')">
+          <h5>Peminjaman Aset TU</h5>
+          <i class="bi bi-box-seam"></i>
         </div>
       </div>
 
       <div class="col">
-        <div class="card text-center" onclick="handleClick('pengaturan.html')">
-          <div class="card-body">
-            <i class="bi bi-gear-fill icon"></i>
-            <h5>Pengaturan</h5>
-          </div>
+        <div class="card-portal bg-grad-12" onclick="handleClick('pengaturan.html')">
+          <h5>Pengaturan</h5>
+          <i class="bi bi-gear-fill"></i>
         </div>
       </div>
 
@@ -234,7 +304,7 @@
       const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
       const waktu = now.toLocaleTimeString('id-ID');
       const tanggal = now.toLocaleDateString('id-ID');
-      document.getElementById("datetime").innerText = `${hari[now.getDay()]}, ${tanggal} - ${waktu}`;
+      document.getElementById("datetime").innerHTML = `<i class="bi bi-clock me-1 text-primary"></i> ${hari[now.getDay()]}, ${tanggal} - ${waktu}`;
     }
     setInterval(updateDateTime, 1000);
     updateDateTime();
@@ -243,9 +313,9 @@
       try {
         const res = await fetch(`https://wttr.in/Medan?format=1`);
         const cuaca = await res.text();
-        document.getElementById("cuaca").innerText = `Cuaca: ${cuaca.trim()}`;
+        document.getElementById("cuaca").innerHTML = `<i class="bi bi-cloud-sun me-1 text-warning"></i> Cuaca: ${cuaca.trim()}`;
       } catch {
-        document.getElementById("cuaca").innerText = "Cuaca: -";
+        document.getElementById("cuaca").innerHTML = `<i class="bi bi-cloud-sun me-1 text-warning"></i> Cuaca: -`;
       }
     }
     getWeather();
