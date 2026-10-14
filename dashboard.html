@@ -3,135 +3,235 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SMARTSCHOOL - SMAN 1 SUNGGAL</title>
+  <title>SMARTSCHOOL 2026 - SMAN 1 SUNGGAL</title>
 
   <!-- Google Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
-    body {
-      background-color: #f3f6f9;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      color: #1e293b;
-      margin: 0;
-      padding-bottom: 50px;
+    :root {
+      --bg-deep: #070a13;
+      --bg-card: rgba(18, 24, 38, 0.7);
+      --border-glow: rgba(59, 130, 246, 0.2);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
     }
 
-    /* Header Berdasarkan Gambar image_73799c.png */
+    body {
+      background-color: var(--bg-deep);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 40%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-main);
+      margin: 0;
+      padding-bottom: 60px;
+      min-height: 100vh;
+    }
+
+    /* Top Bar Futuristic */
     .top-bar {
-      background: white;
-      padding: 20px;
-      border-bottom: 1px solid #e2e8f0;
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 18px 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
     .header-left { flex: 1; min-width: 250px; }
     .header-center { flex: 1; text-align: center; min-width: 200px; }
-    .header-right { flex: 1; text-align: right; font-size: 0.85rem; color: #64748b; min-width: 250px; }
+    .header-right { flex: 1; text-align: right; font-size: 0.82rem; color: var(--text-muted); min-width: 250px; }
 
     .welcome-pill {
-      background: #f1f5f9;
-      padding: 5px 15px;
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 4px 14px;
       border-radius: 50px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 700;
       display: inline-block;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
     }
 
     .app-brand {
       font-weight: 800;
-      color: #1e40af;
-      line-height: 1.1;
+      background: linear-gradient(135deg, #ffffff 30%, #93c5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
       margin: 0;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
+      letter-spacing: -0.5px;
     }
 
     .clock-box {
-      border: 2px solid #3b82f6;
-      border-radius: 10px;
-      padding: 10px 20px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      border-radius: 12px;
+      padding: 8px 22px;
       display: inline-block;
-      background: white;
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
     }
-    .clock-label { font-size: 0.65rem; font-weight: 800; color: #1e293b; display: block; }
-    #time { font-size: 1.8rem; font-weight: 800; color: #1e293b; font-family: monospace; }
+    .clock-label { font-size: 0.6rem; font-weight: 800; color: #60a5fa; display: block; letter-spacing: 1px; }
+    #time { font-size: 1.6rem; font-weight: 800; color: #ffffff; font-family: monospace; letter-spacing: 1px; }
 
     .section-title {
       text-align: center;
       font-weight: 800;
-      margin: 30px 0;
-      font-size: 1.5rem;
+      margin: 40px 0 25px 0;
+      font-size: 1.6rem;
+      letter-spacing: -0.5px;
     }
     .text-gradient {
-      background: linear-gradient(to right, #ef4444, #8b5cf6, #06b6d4);
+      background: linear-gradient(135deg, #f43f5e, #a855f7, #06b6d4);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    /* Grid Card Layout */
+    /* Holographic Card Portal */
     .card-portal {
-      border: none;
-      border-radius: 15px;
-      padding: 25px;
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 18px;
+      padding: 24px;
       color: white;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 130px;
-      transition: transform 0.2s, box-shadow 0.2s;
+      height: 135px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-portal::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
     .card-portal:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      transform: translateY(-6px) scale(1.01);
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
     }
 
+    .card-portal:hover::before { opacity: 1; }
+
     .card-portal h5 {
-      font-weight: 800;
-      font-size: 1.3rem;
+      font-weight: 700;
+      font-size: 1.25rem;
       margin: 0;
-      max-width: 60%;
+      max-width: 65%;
       z-index: 2;
+      letter-spacing: -0.3px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .card-portal i {
-      font-size: 3.5rem;
-      opacity: 0.4;
+      font-size: 3.8rem;
+      opacity: 0.25;
       position: absolute;
-      right: 15px;
-      transition: 0.3s;
+      right: 18px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1;
     }
-    .card-portal:hover i { opacity: 0.8; transform: scale(1.1); }
+    .card-portal:hover i { opacity: 0.6; transform: scale(1.15) rotate(-5deg); }
 
-    /* Gradients dari gambar image_73799c.png */
-    .bg-purple { background: linear-gradient(135deg, #a855f7, #7e22ce); }
-    .bg-darkblue { background: linear-gradient(135deg, #2563eb, #1e3a8a); }
-    .bg-green { background: linear-gradient(135deg, #22c55e, #15803d); }
-    .bg-cyan { background: linear-gradient(135deg, #06b6d4, #0891b2); }
-    .bg-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
-    .bg-pink { background: linear-gradient(135deg, #ec4899, #be185d); }
-    .bg-yellow { background: linear-gradient(135deg, #facc15, #ca8a04); }
-    .bg-teal { background: linear-gradient(135deg, #14b8a6, #0d9488); }
-    .bg-indigo { background: linear-gradient(135deg, #6366f1, #4338ca); }
+    /* Modern Glow Gradients */
+    .bg-purple { background: linear-gradient(135deg, rgba(168, 85, 247, 0.35), rgba(126, 34, 206, 0.45)); border-color: rgba(168, 85, 247, 0.3); }
+    .bg-darkblue { background: linear-gradient(135deg, rgba(37, 99, 235, 0.35), rgba(30, 58, 138, 0.45)); border-color: rgba(37, 99, 235, 0.3); }
+    .bg-green { background: linear-gradient(135deg, rgba(34, 197, 94, 0.35), rgba(21, 128, 61, 0.45)); border-color: rgba(34, 197, 94, 0.3); }
+    .bg-cyan { background: linear-gradient(135deg, rgba(6, 182, 212, 0.35), rgba(8, 145, 178, 0.45)); border-color: rgba(6, 182, 212, 0.3); }
+    .bg-orange { background: linear-gradient(135deg, rgba(249, 115, 22, 0.35), rgba(234, 88, 12, 0.45)); border-color: rgba(249, 115, 22, 0.3); }
+    .bg-pink { background: linear-gradient(135deg, rgba(236, 72, 153, 0.35), rgba(190, 24, 93, 0.45)); border-color: rgba(236, 72, 153, 0.3); }
+    .bg-yellow { background: linear-gradient(135deg, rgba(250, 204, 21, 0.35), rgba(202, 138, 4, 0.45)); border-color: rgba(250, 204, 21, 0.3); }
+    .bg-teal { background: linear-gradient(135deg, rgba(20, 184, 166, 0.35), rgba(13, 148, 136, 0.45)); border-color: rgba(20, 184, 166, 0.3); }
+    .bg-indigo { background: linear-gradient(135deg, rgba(99, 102, 241, 0.35), rgba(67, 56, 202, 0.45)); border-color: rgba(99, 102, 241, 0.3); }
 
-    /* Footer Admin */
+    /* Admin Panel Glassmorphism */
     .admin-card {
-      background: white;
-      border-radius: 15px;
-      padding: 20px;
-      margin-top: 40px;
-      border: 1px solid #e2e8f0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 25px;
+      margin-top: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    }
+
+    .form-control {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 15px;
+    }
+    .form-control:focus {
+      background: rgba(30, 41, 59, 0.9);
+      border-color: #3b82f6;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+    }
+    .form-control::placeholder { color: #64748b; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      padding: 10px;
+      transition: 0.2s;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    }
+
+    .btn-outline-secondary {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #cbd5e1;
+      border-radius: 10px;
+      font-weight: 600;
+      padding: 10px;
+      transition: 0.2s;
+    }
+    .btn-outline-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.4);
+      color: #fff;
+    }
+
+    /* Status Indicator Dot */
+    .live-dot {
+      height: 8px; width: 8px; background-color: #22c55e; border-radius: 50%; display: inline-block;
+      box-shadow: 0 0 10px #22c55e; margin-right: 5px; animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
     }
   </style>
 </head>
@@ -140,19 +240,19 @@
   <!-- Header Section -->
   <header class="top-bar">
     <div class="header-left">
-      <div class="welcome-pill" id="greeting">Selamat Pagi 👋</div>
-      <h1 class="app-brand">APLIKASI SMARTSCHOOL<br>SMAN 1 SUNGGAL</h1>
+      <div class="welcome-pill" id="greeting"><span class="live-dot"></span>Selamat Pagi 👋</div>
+      <h1 class="app-brand">SMARTSCHOOL 2026<br>SMAN 1 SUNGGAL</h1>
     </div>
     
     <div class="header-center">
       <div class="clock-box">
-        <span class="clock-label">WAKTU SAAT INI:</span>
+        <span class="clock-label">WAKTU SISTEM REAL-TIME:</span>
         <div id="time">00:00:00 WIB</div>
       </div>
     </div>
 
     <div class="header-right">
-      <p><i>"Nelson Mandela yang menginspirasikan orang akan kemajuan dunia yang digital ini."</i><br><b>- Nelson Mandela</b></p>
+      <p style="margin:0;"><i>"Nelson Mandela yang menginspirasikan orang akan kemajuan dunia yang digital ini."</i><br><b style="color: #60a5fa;">- Nelson Mandela</b></p>
     </div>
   </header>
 
@@ -226,10 +326,10 @@
 
     <!-- Admin Panel -->
     <div class="admin-card mx-auto" style="max-width: 800px;">
-      <h6 class="fw-bold mb-3">Backup / Restore</h6>
+      <h6 class="fw-bold mb-3 text-white d-flex align-items-center"><i class="bi bi-database-gear me-2 text-primary"></i> Database Backup / Restore</h6>
       <div class="row g-2">
         <div class="col-md-6">
-          <input type="password" class="form-control" placeholder="Masukkan Kode" id="kode">
+          <input type="password" class="form-control" placeholder="Masukkan Kode Keamanan" id="kode">
         </div>
         <div class="col-md-3 col-6">
           <button class="btn btn-primary w-100" onclick="exportDatabase()"><i class="bi bi-cloud-download me-2"></i>Export</button>
@@ -242,11 +342,12 @@
     </div>
   </div>
 
+  <!-- Firebase SDK Tetap Sama -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
   <script>
-    // Konfigurasi Firebase (Tetap sesuai aslinya)
+    // Konfigurasi Firebase (Original)
     const firebaseConfig = {
       apiKey: "AIzaSyBs3R8J9H6hQ96_Cm2WhWduPCK-uWJSzUo",
       authDomain: "loginsmartschool-4f57d.firebaseapp.com",
@@ -307,7 +408,7 @@
       if (hrs >= 11 && hrs < 15) greet = "Selamat Siang ☀️";
       else if (hrs >= 15 && hrs < 18) greet = "Selamat Sore 🌤️";
       else if (hrs >= 18 || hrs < 5) greet = "Selamat Malam 🌙";
-      document.getElementById("greeting").innerText = greet;
+      document.getElementById("greeting").innerHTML = `<span class="live-dot"></span>${greet}`;
     }
     setInterval(updateHeader, 1000);
     updateHeader();
